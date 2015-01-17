@@ -6,7 +6,7 @@ typescript-simple [![NPM version][npm-image]][npm-url] [![build status][travis-i
 ## Description
 
 Simple TypeScript Compiler Service API.
-TypeScirpt 1.4 has official compiler API, but it isn't easy to compile tiny TypeScript code string.
+TypeScirpt 1.4 has [official compiler API](https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API), but it isn't easy to compile tiny TypeScript code string.
 `typescript-simple` provide just one method that accepts TypeScript code string and returns JavaScript code.
 
 
