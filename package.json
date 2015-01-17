@@ -6,8 +6,7 @@
   "scripts": {
     "test": "mocha",
     "build": "tsc --target ES5 --module commonjs --noImplicitAny index.ts",
-    "dts": "npm install dtsm && dtsm install",
-    "prepublish": "npm run build && npm run test"
+    "dts": "npm install dtsm && dtsm install"
   },
   "repository": {
     "type": "git",
