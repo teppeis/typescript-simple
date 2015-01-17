@@ -1,7 +1,7 @@
 {
-  "name": "tsss",
-  "version": "1.0.0",
-  "description": "Simple TypeScript Compiler Service API",
+  "name": "typescript-simple",
+  "version": "0.1.0",
+  "description": "Just compile TypeScript code string to JS. That's all!",
   "main": "index.js",
   "scripts": {
     "test": "mocha",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/teppeis/tsss"
+    "url": "https://github.com/teppeis/typescript-simple"
   },
   "keywords": [
     "typescript"
@@ -17,9 +17,9 @@
   "author": "Teppei Sato <teppeis@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/teppeis/tsss/issues"
+    "url": "https://github.com/teppeis/typescript-simple/issues"
   },
-  "homepage": "https://github.com/teppeis/tsss",
+  "homepage": "https://github.com/teppeis/typescript-simple",
   "dependencies": {
     "typescript": "^1.4.1"
   },
