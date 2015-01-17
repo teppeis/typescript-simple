@@ -4,7 +4,8 @@
   "description": "Simple TypeScript Compiler Service API",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "build": "tsc --target ES5 --module commonjs index.ts"
   },
   "repository": {
     "type": "git",
@@ -13,7 +14,7 @@
   "keywords": [
     "typescript"
   ],
-  "author": "Teppei Sato",
+  "author": "Teppei Sato <teppeis@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/teppeis/tsss/issues"
@@ -21,5 +22,8 @@
   "homepage": "https://github.com/teppeis/tsss",
   "dependencies": {
     "typescript": "^1.4.1"
+  },
+  "devDependencies": {
+    "mocha": "^2.1.0"
   }
 }
