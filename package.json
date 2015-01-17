@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "build": "tsc --target ES5 --module commonjs --noImplicitAny index.ts",
-    "dts": "npm install dtsm && dtsm install --insight false"
+    "build": "tsc --target ES5 --module commonjs --noImplicitAny index.ts"
   },
   "repository": {
     "type": "git",
