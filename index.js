@@ -6,22 +6,22 @@ var path = require('path');
 var ts = require('typescript');
 var FILENAME_TS = 'file.ts';
 /**
- * @param {string} contents TypeScript source code to compile
- * @param {ts.CompilerOptions} compilerOptions TypeScript compile options (some options are ignored)
+ * @param {string} code TypeScript source code to compile
+ * @param {ts.CompilerOptions=} options TypeScript compile options (some options are ignored)
  */
-function compile(contents, compilerOptions) {
-    if (compilerOptions === void 0) { compilerOptions = {}; }
-    if (compilerOptions.target == null) {
-        compilerOptions.target = 0 /* ES3 */;
+function compile(code, options) {
+    if (options === void 0) { options = {}; }
+    if (options.target == null) {
+        options.target = 0 /* ES3 */;
     }
-    if (compilerOptions.module == null) {
-        compilerOptions.module = 0 /* None */;
+    if (options.module == null) {
+        options.module = 0 /* None */;
     }
     var outputs = {};
     var compilerHost = {
         getSourceFile: function (filename, languageVersion) {
             if (filename === FILENAME_TS) {
-                return ts.createSourceFile(filename, contents, languageVersion, '0');
+                return ts.createSourceFile(filename, code, languageVersion, '0');
             }
             else if (/^lib(?:\.es6)?\.d\.ts$/.test(filename)) {
                 var libPath = path.join(path.dirname(require.resolve('typescript')), filename);
@@ -54,7 +54,7 @@ function compile(contents, compilerOptions) {
             return os.EOL;
         }
     };
-    var program = ts.createProgram([FILENAME_TS], compilerOptions, compilerHost);
+    var program = ts.createProgram([FILENAME_TS], options, compilerHost);
     var diagnostics = program.getDiagnostics();
     if (diagnostics.length > 0) {
         throw new Error(formatDiagnostics(diagnostics));

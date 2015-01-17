@@ -44,7 +44,7 @@ try {
 
 ## API
 
-### compile(code: string, options: typescript.CompilerOptions): string
+### compile(code: string, options?: typescript.CompilerOptions): string
 
 * `code`: TypeScript input source code string
 * `options`: TypeScript compiler options

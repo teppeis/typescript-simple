@@ -10,22 +10,22 @@ import ts = require('typescript');
 var FILENAME_TS = 'file.ts';
  
 /**
- * @param {string} contents TypeScript source code to compile
- * @param {ts.CompilerOptions} compilerOptions TypeScript compile options (some options are ignored)
+ * @param {string} code TypeScript source code to compile
+ * @param {ts.CompilerOptions=} options TypeScript compile options (some options are ignored)
  */
-function compile(contents: string, compilerOptions: ts.CompilerOptions = {}) {
-    if (compilerOptions.target == null) {
-        compilerOptions.target = ts.ScriptTarget.ES3;
+function compile(code: string, options: ts.CompilerOptions = {}) {
+    if (options.target == null) {
+        options.target = ts.ScriptTarget.ES3;
     }
-    if (compilerOptions.module == null) {
-        compilerOptions.module = ts.ModuleKind.None;
+    if (options.module == null) {
+        options.module = ts.ModuleKind.None;
     }
 
     var outputs: {[index: string]: string} = {};
     var compilerHost = {
         getSourceFile: function(filename: string, languageVersion: ts.ScriptTarget) {
             if (filename === FILENAME_TS) {
-                return ts.createSourceFile(filename, contents, languageVersion, '0');
+                return ts.createSourceFile(filename, code, languageVersion, '0');
             } else if (/^lib(?:\.es6)?\.d\.ts$/.test(filename)) {
                 var libPath = path.join(path.dirname(require.resolve('typescript')), filename);
                 var libSource = fs.readFileSync(libPath).toString();
@@ -49,7 +49,7 @@ function compile(contents: string, compilerOptions: ts.CompilerOptions = {}) {
         getNewLine: function() { return os.EOL; }
     };
 
-    var program = ts.createProgram([FILENAME_TS], compilerOptions, compilerHost);
+    var program = ts.createProgram([FILENAME_TS], options, compilerHost);
     var diagnostics = program.getDiagnostics();
     if (diagnostics.length > 0) {
         throw new Error(formatDiagnostics(diagnostics));
