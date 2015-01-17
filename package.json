@@ -1,0 +1,25 @@
+{
+  "name": "tsss",
+  "version": "1.0.0",
+  "description": "Simple TypeScript Compiler Service API",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/teppeis/tsss"
+  },
+  "keywords": [
+    "typescript"
+  ],
+  "author": "Teppei Sato",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/teppeis/tsss/issues"
+  },
+  "homepage": "https://github.com/teppeis/tsss",
+  "dependencies": {
+    "typescript": "^1.4.1"
+  }
+}
