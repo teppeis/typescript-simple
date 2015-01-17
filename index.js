@@ -55,18 +55,26 @@ function compile(contents, compilerOptions) {
         }
     };
     var program = ts.createProgram([FILENAME_TS], compilerOptions, compilerHost);
-    var errors = program.getDiagnostics();
-    if (!errors.length) {
-        var checker = program.getTypeChecker(true);
-        errors = checker.getDiagnostics();
-        checker.emitFiles();
+    var diagnostics = program.getDiagnostics();
+    if (diagnostics.length > 0) {
+        throw new Error(formatDiagnostics(diagnostics));
     }
-    if (errors.length > 0) {
-        throw new Error(errors.map(formatError).join(os.EOL));
+    var checker = program.getTypeChecker(true);
+    diagnostics = checker.getDiagnostics();
+    checker.emitFiles();
+    if (diagnostics.length > 0) {
+        throw new Error(formatDiagnostics(diagnostics));
     }
     return outputs[FILENAME_TS.replace(/ts$/, 'js')];
 }
-function formatError(e) {
-    return 'L' + e.file.getLineAndCharacterFromPosition(e.start).line + ': ' + e.messageText;
+function formatDiagnostics(diagnostics) {
+    return diagnostics.map(function (d) {
+        if (d.file) {
+            return 'L' + d.file.getLineAndCharacterFromPosition(d.start).line + ': ' + d.messageText;
+        }
+        else {
+            return d.messageText;
+        }
+    }).join(os.EOL);
 }
 module.exports = compile;

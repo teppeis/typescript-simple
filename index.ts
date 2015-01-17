@@ -21,9 +21,9 @@ function compile(contents: string, compilerOptions: ts.CompilerOptions = {}) {
         compilerOptions.module = ts.ModuleKind.None;
     }
 
-    var outputs = {};
+    var outputs: {[index: string]: string} = {};
     var compilerHost = {
-        getSourceFile: function(filename, languageVersion) {
+        getSourceFile: function(filename: string, languageVersion: ts.ScriptTarget) {
             if (filename === FILENAME_TS) {
                 return ts.createSourceFile(filename, contents, languageVersion, '0');
             } else if (/^lib(?:\.es6)?\.d\.ts$/.test(filename)) {
@@ -33,10 +33,10 @@ function compile(contents: string, compilerOptions: ts.CompilerOptions = {}) {
             }
             return undefined;
         },
-        writeFile: function(name, text, writeByteOrderMark) {
+        writeFile: function(name: string, text: string, writeByteOrderMark: boolean) {
             outputs[name] = text;
         },
-        getDefaultLibFilename: function(options) {
+        getDefaultLibFilename: function(options: ts.CompilerOptions) {
             if (options.target === ts.ScriptTarget.ES6) {
                 return 'lib.es6.d.ts';
             } else {
@@ -44,27 +44,35 @@ function compile(contents: string, compilerOptions: ts.CompilerOptions = {}) {
             }
         },
         useCaseSensitiveFileNames: function() { return true; },
-        getCanonicalFileName: function(filename) { return filename; },
+        getCanonicalFileName: function(filename: string) { return filename; },
         getCurrentDirectory: function() { return ''; },
         getNewLine: function() { return os.EOL; }
     };
+
     var program = ts.createProgram([FILENAME_TS], compilerOptions, compilerHost);
-    var errors = program.getDiagnostics();
-    if (!errors.length) {
-        var checker = program.getTypeChecker(true);
-        errors = checker.getDiagnostics();
-        checker.emitFiles();
+    var diagnostics = program.getDiagnostics();
+    if (diagnostics.length > 0) {
+        throw new Error(formatDiagnostics(diagnostics));
     }
 
-    if (errors.length > 0) {
-        throw new Error(errors.map(formatError).join(os.EOL));
+    var checker = program.getTypeChecker(true);
+    diagnostics = checker.getDiagnostics();
+    checker.emitFiles();
+    if (diagnostics.length > 0) {
+        throw new Error(formatDiagnostics(diagnostics));
     }
 
     return outputs[FILENAME_TS.replace(/ts$/, 'js')];
 }
 
-function formatError(e) {
-    return 'L' + e.file.getLineAndCharacterFromPosition(e.start).line + ': ' + e.messageText;
+function formatDiagnostics(diagnostics: ts.Diagnostic[]) {
+    return diagnostics.map((d) => {
+        if (d.file) {
+            return 'L' + d.file.getLineAndCharacterFromPosition(d.start).line + ': ' + d.messageText;
+        } else {
+            return d.messageText;
+        }
+    }).join(os.EOL);
 }
 
 module.exports = compile;
