@@ -4,6 +4,5 @@ node_js:
   - "0.11"
 sudo: false
 before_script:
-  - npm i -g dtsm
-  - dtsm install
+  - npm run dts
   - npm run build
