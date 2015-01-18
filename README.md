@@ -21,21 +21,21 @@ Simple usage.
 
 ```javascript
 var tss = require('typescript-simple');
-var js = tss.compile('var n: number = 1;');
+var js = tss('var n: number = 1;');
 console.log(js); // 'var n = 1;'
 ```
 
 Specify compiler options.
 
 ```javascript
-var js = tss.compile('var n: number = 1;', {noImplicitAny: true});
+var js = tss('var n: number = 1;', {noImplicitAny: true});
 ```
 
 If the code causes errors, `typescript-simple` throws errors.
 
 ```javascript
 try {
-    var js = tss.compile('var n: number = "str";');
+    var js = tss('var n: number = "str";');
 } catch (e) {
     console.error(e); // Error: L1: Type 'string' is not assignable to type 'number'.
 }
