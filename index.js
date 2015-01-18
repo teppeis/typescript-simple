@@ -1,5 +1,5 @@
 /// <reference path="typings/node/node.d.ts" />
-/// <reference path="typings/typescript/typescript.d.ts" />
+/// <reference path="node_modules/typescript/bin/typescript.d.ts" />
 var fs = require('fs');
 var os = require('os');
 var path = require('path');
