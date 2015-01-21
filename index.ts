@@ -8,71 +8,118 @@ import path = require('path');
 import ts = require('typescript');
 
 var FILENAME_TS = 'file.ts';
- 
-/**
- * @param {string} code TypeScript source code to compile
- * @param {ts.CompilerOptions=} options TypeScript compile options (some options are ignored)
- */
-function compile(code: string, options: ts.CompilerOptions = {}) {
-    if (options.target == null) {
-        options.target = ts.ScriptTarget.ES3;
-    }
-    if (options.module == null) {
-        options.module = ts.ModuleKind.None;
-    }
 
-    var outputs: {[index: string]: string} = {};
-    var compilerHost = {
-        getSourceFile: function(filename: string, languageVersion: ts.ScriptTarget) {
-            if (filename === FILENAME_TS) {
-                return ts.createSourceFile(filename, code, languageVersion, '0');
-            } else if (/^lib(?:\.es6)?\.d\.ts$/.test(filename)) {
-                var libPath = path.join(path.dirname(require.resolve('typescript')), filename);
-                var libSource = fs.readFileSync(libPath).toString();
-                return ts.createSourceFile(filename, libSource, languageVersion, '0');
+function tss(code: string, options: ts.CompilerOptions): string {
+    if (options) {
+        return new tss.TypeScriptSimple(options).compile(code);
+    } else {
+        return defaultTss.compile(code);
+    }
+}
+
+module tss {
+    export class TypeScriptSimple {
+        private service: ts.LanguageService = null;
+        private outputs: ts.Map<string> = {};
+        private options: ts.CompilerOptions;
+        private files: ts.Map<{version: number; text: string;}> = {};
+
+        /**
+        * @param {ts.CompilerOptions=} options TypeScript compile options (some options are ignored)
+        */
+        constructor(options: ts.CompilerOptions = {}) {
+            if (options.target == null) {
+                options.target = ts.ScriptTarget.ES5;
             }
-            return undefined;
-        },
-        writeFile: function(name: string, text: string, writeByteOrderMark: boolean) {
-            outputs[name] = text;
-        },
-        getDefaultLibFilename: function(options: ts.CompilerOptions) {
+            if (options.module == null) {
+                options.module = ts.ModuleKind.None;
+            }
+            this.options = options;
+        }
+    
+        /**
+        * @param {string} code TypeScript source code to compile
+        * @return {string}
+        */
+        compile(code: string): string {
+            if (!this.service) {
+                this.service = this.createService();
+            }
+
+            var file = this.files[FILENAME_TS];
+            file.text = code;
+            file.version++;
+
+            return this.toJavaScript(this.service);
+        }
+
+        private createService(): ts.LanguageService {
+            var defaultLib = this.getDefaultLibFilename(this.options);
+            var defaultLibPath = path.join(this.getTypeScriptBinDir(), defaultLib);
+            this.files[defaultLib] = { version: 0, text: fs.readFileSync(defaultLibPath).toString() };
+            this.files[FILENAME_TS] = { version: 0, text: '' };
+
+            var servicesHost: ts.LanguageServiceHost = {
+                getScriptFileNames: () => [this.getDefaultLibFilename(this.options), FILENAME_TS],
+                getScriptVersion: (filename) => this.files[filename] && this.files[filename].version.toString(),
+                getScriptSnapshot: (filename) => {
+                    var file = this.files[filename];
+                    return {
+                        getText: (start, end) => file.text.substring(start, end),
+                        getLength: () => file.text.length,
+                        getLineStartPositions: () => [],
+                        getChangeRange: (oldSnapshot) => undefined
+                    };
+                },
+                getCurrentDirectory: () => process.cwd(),
+                getScriptIsOpen: () => true,
+                getCompilationSettings: () => this.options,
+                getDefaultLibFilename: (options: ts.CompilerOptions) => {
+                    return this.getDefaultLibFilename(options);
+                },
+                log: (message) => console.log(message)
+            };
+
+            return ts.createLanguageService(servicesHost, ts.createDocumentRegistry())
+        }
+
+        private getTypeScriptBinDir(): string {
+            return path.dirname(require.resolve('typescript'));
+        }
+
+        private getDefaultLibFilename(options: ts.CompilerOptions): string {
             if (options.target === ts.ScriptTarget.ES6) {
                 return 'lib.es6.d.ts';
             } else {
                 return 'lib.d.ts';
             }
-        },
-        useCaseSensitiveFileNames: function() { return true; },
-        getCanonicalFileName: function(filename: string) { return filename; },
-        getCurrentDirectory: function() { return ''; },
-        getNewLine: function() { return os.EOL; }
-    };
-
-    var program = ts.createProgram([FILENAME_TS], options, compilerHost);
-    var diagnostics = program.getDiagnostics();
-    if (diagnostics.length > 0) {
-        throw new Error(formatDiagnostics(diagnostics));
-    }
-
-    var checker = program.getTypeChecker(true);
-    diagnostics = checker.getDiagnostics();
-    checker.emitFiles();
-    if (diagnostics.length > 0) {
-        throw new Error(formatDiagnostics(diagnostics));
-    }
-
-    return outputs[FILENAME_TS.replace(/ts$/, 'js')];
-}
-
-function formatDiagnostics(diagnostics: ts.Diagnostic[]) {
-    return diagnostics.map((d) => {
-        if (d.file) {
-            return 'L' + d.file.getLineAndCharacterFromPosition(d.start).line + ': ' + d.messageText;
-        } else {
-            return d.messageText;
         }
-    }).join(os.EOL);
+
+        private toJavaScript(service: ts.LanguageService): string {
+            var output = service.getEmitOutput(FILENAME_TS);
+            if (output.emitOutputStatus === ts.EmitReturnStatus.Succeeded) {
+                var filename = FILENAME_TS.replace(/ts$/, 'js');
+                return output.outputFiles.filter((file) => file.name === filename)[0].text.replace(/\r\n/g, os.EOL);
+            }
+
+            var allDiagnostics = service.getCompilerOptionsDiagnostics()
+                .concat(service.getSyntacticDiagnostics(FILENAME_TS))
+                .concat(service.getSemanticDiagnostics(FILENAME_TS));
+            throw new Error(this.formatDiagnostics(allDiagnostics));
+        }
+
+        private formatDiagnostics(diagnostics: ts.Diagnostic[]): string {
+            return diagnostics.map((d) => {
+                if (d.file) {
+                    return 'L' + d.file.getLineAndCharacterFromPosition(d.start).line + ': ' + d.messageText;
+                } else {
+                    return d.messageText;
+                }
+            }).join(os.EOL);
+        }
+    }
 }
 
-export = compile;
+var defaultTss = new tss.TypeScriptSimple();
+
+export = tss;
