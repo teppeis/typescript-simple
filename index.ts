@@ -21,7 +21,7 @@ class TypeScriptSimple {
      */
     constructor(options: ts.CompilerOptions = {}) {
         if (options.target == null) {
-            options.target = ts.ScriptTarget.ES3;
+            options.target = ts.ScriptTarget.ES5;
         }
         if (options.module == null) {
             options.module = ts.ModuleKind.None;

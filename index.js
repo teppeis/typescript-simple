@@ -15,7 +15,7 @@ var TypeScriptSimple = (function () {
         this.outputs = {};
         this.files = {};
         if (options.target == null) {
-            options.target = 0 /* ES3 */;
+            options.target = 1 /* ES5 */;
         }
         if (options.module == null) {
             options.module = 0 /* None */;
