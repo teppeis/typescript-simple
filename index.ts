@@ -8,7 +8,6 @@ import path = require('path');
 import ts = require('typescript');
 
 var FILENAME_TS = 'file.ts';
-var defaultTss;
 
 function tss(code: string, options: ts.CompilerOptions): string {
     if (options) {
@@ -121,6 +120,6 @@ module tss {
     }
 }
 
-defaultTss = new tss.TypeScriptSimple();
+var defaultTss = new tss.TypeScriptSimple();
 
 export = tss;

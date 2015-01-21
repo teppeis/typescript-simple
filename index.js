@@ -5,7 +5,6 @@ var os = require('os');
 var path = require('path');
 var ts = require('typescript');
 var FILENAME_TS = 'file.ts';
-var defaultTss;
 function tss(code, options) {
     if (options) {
         return new tss.TypeScriptSimple(options).compile(code);
@@ -108,5 +107,5 @@ var tss;
     })();
     tss.TypeScriptSimple = TypeScriptSimple;
 })(tss || (tss = {}));
-defaultTss = new tss.TypeScriptSimple();
+var defaultTss = new tss.TypeScriptSimple();
 module.exports = tss;
