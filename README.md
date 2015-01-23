@@ -17,18 +17,12 @@ $ npm install typescript-simple
 
 ## Usage
 
-Simple usage.
+Simple usage (default target is ES5).
 
 ```javascript
 var tss = require('typescript-simple');
 var js = tss('var n: number = 1;');
 console.log(js); // 'var n = 1;'
-```
-
-Specify compiler options.
-
-```javascript
-var js = tss('var n: number = 1;', {noImplicitAny: true});
 ```
 
 If the code causes errors, `typescript-simple` throws errors.
@@ -41,51 +35,27 @@ try {
 }
 ```
 
+Specify compiler options.
+
+```javascript
+var js = tss('var n: number = 1;', {noImplicitAny: true});
+```
+
+But `tss()` with options is not best-performance-method to be called many times.
+Use `TypeScriptSimple` class for the purpose.
+
+```javascript
+var tss = new tss.TypeScriptSimple({target: ts.ScriptTarget.ES6, noImplicitAny: true});
+var js = tss.compile('var n: number = 1;');
+```
+
 ## Limitaions
 
 `typescript-simple` cannot compile multiple source files.
 
 ## API
 
-### compile(code: string, options?: typescript.CompilerOptions): string
-
-* `code`: TypeScript input source code string
-* `options`: TypeScript compiler options
-* return : JavaScript output code string
-
-Following is full compiler options, but some are ignored in the current implementation.
-
-```typescript
-interface CompilerOptions {
-    allowNonTsExtensions?: boolean;
-    charset?: string;
-    codepage?: number;
-    declaration?: boolean;
-    diagnostics?: boolean;
-    emitBOM?: boolean;
-    help?: boolean;
-    locale?: string;
-    mapRoot?: string;
-    module?: ModuleKind;
-    noEmitOnError?: boolean;
-    noErrorTruncation?: boolean;
-    noImplicitAny?: boolean;
-    noLib?: boolean;
-    noLibCheck?: boolean;
-    noResolve?: boolean;
-    out?: string;
-    outDir?: string;
-    preserveConstEnums?: boolean;
-    removeComments?: boolean;
-    sourceMap?: boolean;
-    sourceRoot?: string;
-    suppressImplicitAnyIndexErrors?: boolean;
-    target?: ScriptTarget;
-    version?: boolean;
-    watch?: boolean;
-    [option: string]: string | number | boolean;
-}
-```
+See [index.d.ts](index.d.ts).
 
 ## Note
 
