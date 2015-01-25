@@ -88,7 +88,9 @@ var tss;
             var output = service.getEmitOutput(FILENAME_TS);
             if (output.emitOutputStatus === 0 /* Succeeded */) {
                 var filename = FILENAME_TS.replace(/ts$/, 'js');
-                return output.outputFiles.filter(function (file) { return file.name === filename; })[0].text.replace(/\r\n/g, os.EOL);
+                var file = output.outputFiles.filter(function (file) { return file.name === filename; })[0];
+                // Fixed in v1.5 https://github.com/Microsoft/TypeScript/issues/1653
+                return file.text.replace(/\r\n/g, os.EOL);
             }
             var allDiagnostics = service.getCompilerOptionsDiagnostics().concat(service.getSyntacticDiagnostics(FILENAME_TS)).concat(service.getSemanticDiagnostics(FILENAME_TS));
             throw new Error(this.formatDiagnostics(allDiagnostics));

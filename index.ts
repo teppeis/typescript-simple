@@ -99,7 +99,9 @@ module tss {
             var output = service.getEmitOutput(FILENAME_TS);
             if (output.emitOutputStatus === ts.EmitReturnStatus.Succeeded) {
                 var filename = FILENAME_TS.replace(/ts$/, 'js');
-                return output.outputFiles.filter((file) => file.name === filename)[0].text.replace(/\r\n/g, os.EOL);
+                var file = output.outputFiles.filter((file) => file.name === filename)[0];
+                // Fixed in v1.5 https://github.com/Microsoft/TypeScript/issues/1653
+                return file.text.replace(/\r\n/g, os.EOL);
             }
 
             var allDiagnostics = service.getCompilerOptionsDiagnostics()
