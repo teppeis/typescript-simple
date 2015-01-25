@@ -17,8 +17,8 @@ var tss;
 (function (tss) {
     var TypeScriptSimple = (function () {
         /**
-        * @param {ts.CompilerOptions=} options TypeScript compile options (some options are ignored)
-        */
+         * @param {ts.CompilerOptions=} options TypeScript compile options (some options are ignored)
+         */
         function TypeScriptSimple(options) {
             if (options === void 0) { options = {}; }
             this.service = null;
@@ -33,9 +33,9 @@ var tss;
             this.options = options;
         }
         /**
-        * @param {string} code TypeScript source code to compile
-        * @return {string}
-        */
+         * @param {string} code TypeScript source code to compile
+         * @return {string}
+         */
         TypeScriptSimple.prototype.compile = function (code) {
             if (!this.service) {
                 this.service = this.createService();

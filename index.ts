@@ -25,8 +25,8 @@ module tss {
         private files: ts.Map<{version: number; text: string;}> = {};
 
         /**
-        * @param {ts.CompilerOptions=} options TypeScript compile options (some options are ignored)
-        */
+         * @param {ts.CompilerOptions=} options TypeScript compile options (some options are ignored)
+         */
         constructor(options: ts.CompilerOptions = {}) {
             if (options.target == null) {
                 options.target = ts.ScriptTarget.ES5;
@@ -38,9 +38,9 @@ module tss {
         }
     
         /**
-        * @param {string} code TypeScript source code to compile
-        * @return {string}
-        */
+         * @param {string} code TypeScript source code to compile
+         * @return {string}
+         */
         compile(code: string): string {
             if (!this.service) {
                 this.service = this.createService();
