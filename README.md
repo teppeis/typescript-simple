@@ -46,7 +46,8 @@ Use `TypeScriptSimple` class for the purpose.
 
 ```javascript
 var tss = new tss.TypeScriptSimple({target: ts.ScriptTarget.ES6, noImplicitAny: true});
-var js = tss.compile('var n: number = 1;');
+var js1 = tss.compile('var n: number = 1;');
+var js2 = tss.compile('var s: string = "foo";');
 ```
 
 ## Limitaions
