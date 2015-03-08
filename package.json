@@ -1,7 +1,7 @@
 {
   "name": "typescript-simple",
   "version": "0.2.0",
-  "description": "Just compile TypeScript code string to JS. That's all!",
+  "description": "Simple API to compile TypeScript code string to JavaScript. That's all!",
   "main": "index.js",
   "scripts": {
     "test": "npm run build && mocha",

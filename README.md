@@ -1,7 +1,7 @@
 typescript-simple [![NPM version][npm-image]][npm-url] [![build status][travis-image]][travis-url] [![Dependency Status][deps-image]][deps-url]
 ======
 
-> Just compile TypeScript code string to JavaScript. That's all!
+> Simple API to compile TypeScript code string to JavaScript. That's all!
 
 ## Description
 
@@ -35,19 +35,40 @@ try {
 }
 ```
 
-Specify compiler options.
+### Compiler Options
+
+Specify [CompilerOptions](https://github.com/Microsoft/TypeScript/blob/v1.4/bin/typescriptServices.d.ts#L1086) at 2nd argument.
 
 ```javascript
 var js = tss('var n: number = 1;', {noImplicitAny: true});
 ```
 
-But `tss()` with options is not best-performance-method to be called many times.
-Use `TypeScriptSimple` class for the purpose.
+### Make repeated compilation faster
+
+`tss()` with options is not best-performance-method to be executed many times.
+Use `TypeScriptSimple` class for this purpose.
 
 ```javascript
-var tss = new tss.TypeScriptSimple({target: ts.ScriptTarget.ES6, noImplicitAny: true});
+var TypeScriptSimple = require('typescript-simple').TypeScriptSimple;
+var tss = new TypeScriptSimple({target: ts.ScriptTarget.ES6, noImplicitAny: true});
 var js1 = tss.compile('var n: number = 1;');
 var js2 = tss.compile('var s: string = "foo";');
+```
+
+### Source map
+
+Inline source map is available.
+
+```javascript
+var tss = new TypeScriptSimple({sourceMap: true});
+var js = tss.compile('var n: number = 1;', 'path/to/file.ts');
+```
+
+Output:
+
+```
+// var n = 1;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uI...
 ```
 
 ## Limitaions
