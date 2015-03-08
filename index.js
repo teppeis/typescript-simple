@@ -19,22 +19,24 @@ var tss;
         /**
          * @param {ts.CompilerOptions=} options TypeScript compile options (some options are ignored)
          */
-        function TypeScriptSimple(options) {
+        function TypeScriptSimple(options, doSemanticChecks) {
             if (options === void 0) { options = {}; }
+            if (doSemanticChecks === void 0) { doSemanticChecks = true; }
+            this.doSemanticChecks = doSemanticChecks;
             this.service = null;
             this.outputs = {};
             this.files = {};
             if (options.target == null) {
-                options.target = 1 /* ES5 */;
+                options.target = ts.ScriptTarget.ES5;
             }
             if (options.module == null) {
-                options.module = 0 /* None */;
+                options.module = ts.ModuleKind.None;
             }
             this.options = options;
         }
         /**
          * @param {string} code TypeScript source code to compile
-         * @return {string}
+         * @return {string} The JavaScript with inline sourceMaps if sourceMaps were enabled
          */
         TypeScriptSimple.prototype.compile = function (code) {
             if (!this.service) {
@@ -77,7 +79,7 @@ var tss;
             return path.dirname(require.resolve('typescript'));
         };
         TypeScriptSimple.prototype.getDefaultLibFilename = function (options) {
-            if (options.target === 2 /* ES6 */) {
+            if (options.target === ts.ScriptTarget.ES6) {
                 return 'lib.es6.d.ts';
             }
             else {
@@ -86,13 +88,22 @@ var tss;
         };
         TypeScriptSimple.prototype.toJavaScript = function (service) {
             var output = service.getEmitOutput(FILENAME_TS);
-            if (output.emitOutputStatus === 0 /* Succeeded */) {
+            // Meaning of succeeded is driven by whether we need to check for semantic errors or not
+            var succeeded = output.emitOutputStatus === ts.EmitReturnStatus.Succeeded;
+            if (!this.doSemanticChecks) {
+                // We have an output. It implies syntactic success
+                if (!succeeded)
+                    succeeded = !!output.outputFiles.length;
+            }
+            if (succeeded) {
                 var filename = FILENAME_TS.replace(/ts$/, 'js');
                 var file = output.outputFiles.filter(function (file) { return file.name === filename; })[0];
                 // Fixed in v1.5 https://github.com/Microsoft/TypeScript/issues/1653
                 return file.text.replace(/\r\n/g, os.EOL);
             }
-            var allDiagnostics = service.getCompilerOptionsDiagnostics().concat(service.getSyntacticDiagnostics(FILENAME_TS)).concat(service.getSemanticDiagnostics(FILENAME_TS));
+            var allDiagnostics = service.getCompilerOptionsDiagnostics().concat(service.getSyntacticDiagnostics(FILENAME_TS));
+            if (this.doSemanticChecks)
+                allDiagnostics = allDiagnostics.concat(service.getSemanticDiagnostics(FILENAME_TS));
             throw new Error(this.formatDiagnostics(allDiagnostics));
         };
         TypeScriptSimple.prototype.formatDiagnostics = function (diagnostics) {

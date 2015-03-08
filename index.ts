@@ -22,12 +22,12 @@ module tss {
         private service: ts.LanguageService = null;
         private outputs: ts.Map<string> = {};
         private options: ts.CompilerOptions;
-        private files: ts.Map<{version: number; text: string;}> = {};
+        private files: ts.Map<{ version: number; text: string; }> = {};
 
         /**
          * @param {ts.CompilerOptions=} options TypeScript compile options (some options are ignored)
          */
-        constructor(options: ts.CompilerOptions = {}) {
+        constructor(options: ts.CompilerOptions = {}, private doSemanticChecks = true) {
             if (options.target == null) {
                 options.target = ts.ScriptTarget.ES5;
             }
@@ -36,10 +36,10 @@ module tss {
             }
             this.options = options;
         }
-    
+
         /**
          * @param {string} code TypeScript source code to compile
-         * @return {string}
+         * @return {string} The JavaScript with inline sourceMaps if sourceMaps were enabled
          */
         compile(code: string): string {
             if (!this.service) {
@@ -97,7 +97,15 @@ module tss {
 
         private toJavaScript(service: ts.LanguageService): string {
             var output = service.getEmitOutput(FILENAME_TS);
-            if (output.emitOutputStatus === ts.EmitReturnStatus.Succeeded) {
+
+            // Meaning of succeeded is driven by whether we need to check for semantic errors or not
+            var succeeded = output.emitOutputStatus === ts.EmitReturnStatus.Succeeded;
+            if (!this.doSemanticChecks) {
+                // We have an output. It implies syntactic success
+                if (!succeeded) succeeded = !!output.outputFiles.length;
+            }
+
+            if (succeeded) {
                 var filename = FILENAME_TS.replace(/ts$/, 'js');
                 var file = output.outputFiles.filter((file) => file.name === filename)[0];
                 // Fixed in v1.5 https://github.com/Microsoft/TypeScript/issues/1653
@@ -105,8 +113,11 @@ module tss {
             }
 
             var allDiagnostics = service.getCompilerOptionsDiagnostics()
-                .concat(service.getSyntacticDiagnostics(FILENAME_TS))
-                .concat(service.getSemanticDiagnostics(FILENAME_TS));
+                .concat(service.getSyntacticDiagnostics(FILENAME_TS));
+
+            if (this.doSemanticChecks)
+                allDiagnostics = allDiagnostics.concat(service.getSemanticDiagnostics(FILENAME_TS));
+
             throw new Error(this.formatDiagnostics(allDiagnostics));
         }
 

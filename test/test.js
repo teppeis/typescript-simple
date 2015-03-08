@@ -75,4 +75,24 @@ describe('typescript-update', function() {
             assert.equal(tss.compile(src), expected);
         });
     });
+
+    context('semantic vs. syntactic errors', function() {
+        var tss;
+        beforeEach(function() {
+            tss = new TypeScriptSimple({target: ts.ScriptTarget.ES5}, false);
+        });
+
+        it('semantic errors are ignored', function() {
+            var src = "var x: number = 'some string';";
+            var expected = "var x = 'some string';" + eol;
+            assert.equal(tss.compile(src), expected);
+        });
+
+        it('syntactic errors are not ignored', function() {
+            var src = "var x = 123 123;";
+            assert.throws(function() {
+                tss.compile(src);
+            }, /^Error: L1: ',' expected./);
+        });
+    });
 });
