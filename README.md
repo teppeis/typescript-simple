@@ -66,8 +66,8 @@ var js = tss.compile('var n: number = 1;', 'path/to/file.ts');
 
 Output:
 
-```
-// var n = 1;
+```javascript
+var n = 1;
 //# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uI...
 ```
 
