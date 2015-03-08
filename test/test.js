@@ -95,4 +95,20 @@ describe('typescript-update', function() {
             }, /^Error: L1: ',' expected./);
         });
     });
+
+    context('sourceMaps', function() {
+        var tss;
+        beforeEach(function() {
+            tss = new TypeScriptSimple({target: ts.ScriptTarget.ES5, sourceMap: true}, false);
+        });
+
+        it('sourceMap:true should result in inline sourceMaps', function() {
+            var src = 'var x = "test";';
+            var srcFile = 'foo/test.ts';
+            var expected =
+                'var x = "test";' + eol
+                + '//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZm9vL3Rlc3QudHMiLCJzb3VyY2VzIjpbImZvby90ZXN0LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLElBQUksQ0FBQyxHQUFHLE1BQU0sQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbInZhciB4ID0gXCJ0ZXN0XCI7Il19';
+            assert.equal(tss.compile(src, srcFile), expected);
+        });
+    });
 });
