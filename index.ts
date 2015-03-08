@@ -22,12 +22,12 @@ module tss {
         private service: ts.LanguageService = null;
         private outputs: ts.Map<string> = {};
         private options: ts.CompilerOptions;
-        private files: ts.Map<{version: number; text: string;}> = {};
+        private files: ts.Map<{ version: number; text: string; }> = {};
 
         /**
          * @param {ts.CompilerOptions=} options TypeScript compile options (some options are ignored)
          */
-        constructor(options: ts.CompilerOptions = {}) {
+        constructor(options: ts.CompilerOptions = {}, private doSemanticChecks = true) {
             if (options.target == null) {
                 options.target = ts.ScriptTarget.ES5;
             }
@@ -36,12 +36,13 @@ module tss {
             }
             this.options = options;
         }
-    
+
         /**
          * @param {string} code TypeScript source code to compile
-         * @return {string}
+         * @param {string} only needed if you plan to use sourceMaps. Provide the complete filePath relevant to you
+         * @return {string} The JavaScript with inline sourceMaps if sourceMaps were enabled
          */
-        compile(code: string): string {
+        compile(code: string, filename = FILENAME_TS): string {
             if (!this.service) {
                 this.service = this.createService();
             }
@@ -50,7 +51,7 @@ module tss {
             file.text = code;
             file.version++;
 
-            return this.toJavaScript(this.service);
+            return this.toJavaScript(this.service, filename);
         }
 
         private createService(): ts.LanguageService {
@@ -95,18 +96,58 @@ module tss {
             }
         }
 
-        private toJavaScript(service: ts.LanguageService): string {
+        /**
+         * converts {"version":3,"file":"file.js","sourceRoot":"","sources":["file.ts"],"names":[],"mappings":"AAAA,IAAI,CAAC,GAAG,MAAM,CAAC"}
+         * to {"version":3,"sources":["foo/test.ts"],"names":[],"mappings":"AAAA,IAAI,CAAC,GAAG,MAAM,CAAC","file":"foo/test.ts","sourcesContent":["var x = 'test';"]}
+         * derived from : https://github.com/thlorenz/convert-source-map
+         */
+        private getInlineSourceMap(mapText: string, filename: string): string {
+            var sourceMap = JSON.parse(mapText);
+            sourceMap.file = filename;
+            sourceMap.sources = [filename];
+            sourceMap.sourcesContent = [this.files[FILENAME_TS].text];
+            delete sourceMap.sourceRoot;
+            return JSON.stringify(sourceMap);
+        }
+
+        private toJavaScript(service: ts.LanguageService, filename = FILENAME_TS): string {
             var output = service.getEmitOutput(FILENAME_TS);
-            if (output.emitOutputStatus === ts.EmitReturnStatus.Succeeded) {
-                var filename = FILENAME_TS.replace(/ts$/, 'js');
-                var file = output.outputFiles.filter((file) => file.name === filename)[0];
+
+            // Meaning of succeeded is driven by whether we need to check for semantic errors or not
+            var succeeded = output.emitOutputStatus === ts.EmitReturnStatus.Succeeded;
+            if (!this.doSemanticChecks) {
+                // We have an output. It implies syntactic success
+                if (!succeeded) succeeded = !!output.outputFiles.length;
+            }
+
+            if (succeeded) {
+                var outputFilename = FILENAME_TS.replace(/ts$/, 'js');
+                var file = output.outputFiles.filter((file) => file.name === outputFilename)[0];
                 // Fixed in v1.5 https://github.com/Microsoft/TypeScript/issues/1653
-                return file.text.replace(/\r\n/g, os.EOL);
+                var text = file.text.replace(/\r\n/g, os.EOL);
+
+                // If we have sourceMaps convert them to inline sourceMaps
+                if (this.options.sourceMap) {
+                    var sourceMapFilename = FILENAME_TS.replace(/ts$/, 'js.map');
+                    var sourceMapFile = output.outputFiles.filter((file) => file.name === sourceMapFilename)[0];
+
+                    // Transform sourcemap
+                    var sourceMapText = sourceMapFile.text;
+                    sourceMapText = this.getInlineSourceMap(sourceMapText, filename);
+
+                    var base64SourceMapText = new Buffer(sourceMapText).toString('base64');
+                    text = text.replace('//# sourceMappingURL=' + sourceMapFilename, '//# sourceMappingURL=data:application/json;base64,' + base64SourceMapText);
+                }
+
+                return text;
             }
 
             var allDiagnostics = service.getCompilerOptionsDiagnostics()
-                .concat(service.getSyntacticDiagnostics(FILENAME_TS))
-                .concat(service.getSemanticDiagnostics(FILENAME_TS));
+                .concat(service.getSyntacticDiagnostics(FILENAME_TS));
+
+            if (this.doSemanticChecks)
+                allDiagnostics = allDiagnostics.concat(service.getSemanticDiagnostics(FILENAME_TS));
+
             throw new Error(this.formatDiagnostics(allDiagnostics));
         }
 
