@@ -27,10 +27,10 @@ var tss;
             this.outputs = {};
             this.files = {};
             if (options.target == null) {
-                options.target = ts.ScriptTarget.ES5;
+                options.target = 1 /* ES5 */;
             }
             if (options.module == null) {
-                options.module = ts.ModuleKind.None;
+                options.module = 0 /* None */;
             }
             this.options = options;
         }
@@ -81,7 +81,7 @@ var tss;
             return path.dirname(require.resolve('typescript'));
         };
         TypeScriptSimple.prototype.getDefaultLibFilename = function (options) {
-            if (options.target === ts.ScriptTarget.ES6) {
+            if (options.target === 2 /* ES6 */) {
                 return 'lib.es6.d.ts';
             }
             else {
@@ -105,7 +105,7 @@ var tss;
             if (filename === void 0) { filename = FILENAME_TS; }
             var output = service.getEmitOutput(FILENAME_TS);
             // Meaning of succeeded is driven by whether we need to check for semantic errors or not
-            var succeeded = output.emitOutputStatus === ts.EmitReturnStatus.Succeeded;
+            var succeeded = output.emitOutputStatus === 0 /* Succeeded */;
             if (!this.doSemanticChecks) {
                 // We have an output. It implies syntactic success
                 if (!succeeded)
