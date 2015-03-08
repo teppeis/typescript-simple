@@ -1,6 +1,7 @@
 var assert = require('assert');
 var fs = require('fs');
 var path = require('path');
+var eol = require('os').EOL;
 
 var ts = require('typescript');
 var tss = require('../');
@@ -10,27 +11,27 @@ describe('typescript-update', function() {
     context('default target (ES5)', function() {
         it('compiles correct code', function() {
             var src = "var x: number = 1;";
-            var expected = 'var x = 1;\n';
+            var expected = 'var x = 1;' + eol;
             assert.equal(tss(src), expected);
         });
 
         it('does not replace CRLF literal', function() {
             var src = "var x: string = '\\r\\n';";
-            var expected = "var x = '\\r\\n';\n";
+            var expected = "var x = '\\r\\n';" + eol;
             assert.equal(tss(src), expected);
         });
 
         it('compiles many times', function() {
             var src = "var x: number = 1;";
-            var expected = 'var x = 1;\n';
+            var expected = 'var x = 1;' + eol;
             assert.equal(tss(src), expected);
 
             src = "var y: number = 2;";
-            expected = 'var y = 2;\n';
+            expected = 'var y = 2;' + eol;
             assert.equal(tss(src), expected);
 
             src = "var z: number = 3;";
-            expected = 'var z = 3;\n';
+            expected = 'var z = 3;' + eol;
             assert.equal(tss(src), expected);
         });
 
@@ -64,13 +65,13 @@ describe('typescript-update', function() {
 
         it('compiles ES6 "let"', function() {
             var src = "let x: number = 1;";
-            var expected = 'let x = 1;\n';
+            var expected = 'let x = 1;' + eol;
             assert.equal(tss.compile(src), expected);
         });
 
         it('compiles ES6 Promise', function() {
-            var src = "var x = new Promise(function (resolve, reject) {\n});";
-            var expected = src + '\n';
+            var src = "var x = new Promise(function (resolve, reject) {" + eol + "});";
+            var expected = src + eol;
             assert.equal(tss.compile(src), expected);
         });
     });
