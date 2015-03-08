@@ -115,40 +115,41 @@ module tss {
 
             // Meaning of succeeded is driven by whether we need to check for semantic errors or not
             var succeeded = output.emitOutputStatus === ts.EmitReturnStatus.Succeeded;
-            if (!this.doSemanticChecks) {
+            if (!this.doSemanticChecks && !succeeded) {
                 // We have an output. It implies syntactic success
-                if (!succeeded) succeeded = !!output.outputFiles.length;
+                succeeded = !!output.outputFiles.length;
             }
 
-            if (succeeded) {
-                var outputFilename = FILENAME_TS.replace(/ts$/, 'js');
-                var file = output.outputFiles.filter((file) => file.name === outputFilename)[0];
-                // Fixed in v1.5 https://github.com/Microsoft/TypeScript/issues/1653
-                var text = file.text.replace(/\r\n/g, os.EOL);
+            if (!succeeded) {
+                var allDiagnostics = service.getCompilerOptionsDiagnostics()
+                    .concat(service.getSyntacticDiagnostics(FILENAME_TS));
 
-                // If we have sourceMaps convert them to inline sourceMaps
-                if (this.options.sourceMap) {
-                    var sourceMapFilename = FILENAME_TS.replace(/ts$/, 'js.map');
-                    var sourceMapFile = output.outputFiles.filter((file) => file.name === sourceMapFilename)[0];
-
-                    // Transform sourcemap
-                    var sourceMapText = sourceMapFile.text;
-                    sourceMapText = this.getInlineSourceMap(sourceMapText, filename);
-
-                    var base64SourceMapText = new Buffer(sourceMapText).toString('base64');
-                    text = text.replace('//# sourceMappingURL=' + sourceMapFilename, '//# sourceMappingURL=data:application/json;base64,' + base64SourceMapText);
+                if (this.doSemanticChecks) {
+                    allDiagnostics = allDiagnostics.concat(service.getSemanticDiagnostics(FILENAME_TS));
                 }
 
-                return text;
+                throw new Error(this.formatDiagnostics(allDiagnostics));
             }
 
-            var allDiagnostics = service.getCompilerOptionsDiagnostics()
-                .concat(service.getSyntacticDiagnostics(FILENAME_TS));
+            var outputFilename = FILENAME_TS.replace(/ts$/, 'js');
+            var file = output.outputFiles.filter((file) => file.name === outputFilename)[0];
+            // TODO: Fixed in v1.5 https://github.com/Microsoft/TypeScript/issues/1653
+            var text = file.text.replace(/\r\n/g, os.EOL);
 
-            if (this.doSemanticChecks)
-                allDiagnostics = allDiagnostics.concat(service.getSemanticDiagnostics(FILENAME_TS));
+            // If we have sourceMaps convert them to inline sourceMaps
+            if (this.options.sourceMap) {
+                var sourceMapFilename = FILENAME_TS.replace(/ts$/, 'js.map');
+                var sourceMapFile = output.outputFiles.filter((file) => file.name === sourceMapFilename)[0];
 
-            throw new Error(this.formatDiagnostics(allDiagnostics));
+                // Transform sourcemap
+                var sourceMapText = sourceMapFile.text;
+                sourceMapText = this.getInlineSourceMap(sourceMapText, filename);
+                var base64SourceMapText = new Buffer(sourceMapText).toString('base64');
+                var sourceMapComment = '//# sourceMappingURL=data:application/json;base64,' + base64SourceMapText;
+                text = text.replace('//# sourceMappingURL=' + sourceMapFilename, sourceMapComment);
+            }
+
+            return text;
         }
 
         private formatDiagnostics(diagnostics: ts.Diagnostic[]): string {
