@@ -70,6 +70,7 @@ Output:
 var n = 1;
 //# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uI...
 ```
+Note: The path to file doesn't need to be an actual file. We just copy the contents of the passed in ts string into the inline sourceMap and make it look like the js is coming from a ts file at that file path.
 
 ## Limitaions
 
