@@ -55,6 +55,17 @@ var js1 = tss.compile('var n: number = 1;');
 var js2 = tss.compile('var s: string = "foo";');
 ```
 
+### Ignore semantic errors
+
+If you don't need TypeScript *semantic* error and just want the result code, give 2nd argument of the constructor `false`.
+
+```javascript
+var tss = new TypeScriptSimple({target: ts.ScriptTarget.ES6}, false);
+var js = tss.compile('var n: string = 1;'); // an error is not thrown.
+```
+
+Note: *syntactic* errors may be thrown.
+
 ### Source map
 
 Inline source map is available.
