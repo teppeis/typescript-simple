@@ -26,6 +26,8 @@ module tss {
 
         /**
          * @param {ts.CompilerOptions=} options TypeScript compile options (some options are ignored)
+         * @param {boolean=} doSemanticChecks Throw if TypeScript semantic error found (default: true)
+         * @constructor
          */
         constructor(options: ts.CompilerOptions = {}, private doSemanticChecks = true) {
             if (options.target == null) {
@@ -39,8 +41,9 @@ module tss {
 
         /**
          * @param {string} code TypeScript source code to compile
-         * @param {string} only needed if you plan to use sourceMaps. Provide the complete filePath relevant to you
+         * @param {string=} filename Only needed if you plan to use sourceMaps. Provide the complete filePath relevant to you
          * @return {string} The JavaScript with inline sourceMaps if sourceMaps were enabled
+         * @throw {Error} A syntactic error or a semantic error (if doSemanticChecks is true)
          */
         compile(code: string, filename = FILENAME_TS): string {
             if (!this.service) {
