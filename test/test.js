@@ -39,21 +39,21 @@ describe('typescript-update', function() {
             var src = "var x: number = 'str';";
             assert.throws(function() {
                 tss(src);
-            }, /^Error: L1: Type 'string' is not assignable to type 'number'./);
+            }, /^Error: L0: Type 'string' is not assignable to type 'number'./);
         });
 
         it('throws an error for ES6 "let"', function() {
             var src = "let x: number = 1;";
             assert.throws(function() {
                 tss(src);
-            }, /^Error: L1: 'let' declarations are only available when targeting ECMAScript 6 and higher./);
+            }, /^Error: L0: 'let' declarations are only available when targeting ECMAScript 6 and higher./);
         });
 
         it('throws an error for ES6 Promise', function() {
             var src = "var x = new Promise(function (resolve, reject) {\n});";
             assert.throws(function() {
                 tss(src);
-            }, /^Error: L1: Cannot find name 'Promise'./);
+            }, /^Error: L0: Cannot find name 'Promise'./);
         });
     });
 
@@ -92,7 +92,7 @@ describe('typescript-update', function() {
             var src = "var x = 123 123;";
             assert.throws(function() {
                 tss.compile(src);
-            }, /^Error: L1: ',' expected./);
+            }, /^Error: L0: ',' expected./);
         });
     });
 
