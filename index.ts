@@ -118,21 +118,14 @@ module tss {
         private toJavaScript(service: ts.LanguageService, fileName = FILENAME_TS): string {
             var output = service.getEmitOutput(FILENAME_TS);
 
-            // Meaning of succeeded is driven by whether we need to check for semantic errors or not
-            var succeeded = output.emitOutputStatus === ts.EmitReturnStatus.Succeeded;
-            if (!this.doSemanticChecks && !succeeded) {
-                // We have an output. It implies syntactic success
-                succeeded = !!output.outputFiles.length;
+            var allDiagnostics = service.getCompilerOptionsDiagnostics()
+                .concat(service.getSyntacticDiagnostics(FILENAME_TS));
+
+            if (this.doSemanticChecks) {
+                allDiagnostics = allDiagnostics.concat(service.getSemanticDiagnostics(FILENAME_TS));
             }
 
-            if (!succeeded) {
-                var allDiagnostics = service.getCompilerOptionsDiagnostics()
-                    .concat(service.getSyntacticDiagnostics(FILENAME_TS));
-
-                if (this.doSemanticChecks) {
-                    allDiagnostics = allDiagnostics.concat(service.getSemanticDiagnostics(FILENAME_TS));
-                }
-
+            if (allDiagnostics.length) {
                 throw new Error(this.formatDiagnostics(allDiagnostics));
             }
 
@@ -160,7 +153,7 @@ module tss {
         private formatDiagnostics(diagnostics: ts.Diagnostic[]): string {
             return diagnostics.map((d) => {
                 if (d.file) {
-                    return 'L' + d.file.getLineAndCharacterFromPosition(d.start).line + ': ' + d.messageText;
+                    return 'L' + d.file.getLineAndCharacterOfPosition(d.start).line + ': ' + d.messageText;
                 } else {
                     return d.messageText;
                 }
