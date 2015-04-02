@@ -41,11 +41,11 @@ module tss {
 
         /**
          * @param {string} code TypeScript source code to compile
-         * @param {string=} filename Only needed if you plan to use sourceMaps. Provide the complete filePath relevant to you
+         * @param {string=} fileName Only needed if you plan to use sourceMaps. Provide the complete filePath relevant to you
          * @return {string} The JavaScript with inline sourceMaps if sourceMaps were enabled
          * @throw {Error} A syntactic error or a semantic error (if doSemanticChecks is true)
          */
-        compile(code: string, filename = FILENAME_TS): string {
+        compile(code: string, fileName = FILENAME_TS): string {
             if (!this.service) {
                 this.service = this.createService();
             }
@@ -54,20 +54,20 @@ module tss {
             file.text = code;
             file.version++;
 
-            return this.toJavaScript(this.service, filename);
+            return this.toJavaScript(this.service, fileName);
         }
 
         private createService(): ts.LanguageService {
-            var defaultLib = this.getDefaultLibFilename(this.options);
+            var defaultLib = this.getDefaultLibFileName(this.options);
             var defaultLibPath = path.join(this.getTypeScriptBinDir(), defaultLib);
             this.files[defaultLib] = { version: 0, text: fs.readFileSync(defaultLibPath).toString() };
             this.files[FILENAME_TS] = { version: 0, text: '' };
 
             var serviceHost: ts.LanguageServiceHost = {
-                getScriptFileNames: () => [this.getDefaultLibFilename(this.options), FILENAME_TS],
-                getScriptVersion: (filename) => this.files[filename] && this.files[filename].version.toString(),
-                getScriptSnapshot: (filename) => {
-                    var file = this.files[filename];
+                getScriptFileNames: () => [this.getDefaultLibFileName(this.options), FILENAME_TS],
+                getScriptVersion: (fileName) => this.files[fileName] && this.files[fileName].version.toString(),
+                getScriptSnapshot: (fileName) => {
+                    var file = this.files[fileName];
                     return {
                         getText: (start, end) => file.text.substring(start, end),
                         getLength: () => file.text.length,
@@ -78,8 +78,8 @@ module tss {
                 getCurrentDirectory: () => process.cwd(),
                 getScriptIsOpen: () => true,
                 getCompilationSettings: () => this.options,
-                getDefaultLibFilename: (options: ts.CompilerOptions) => {
-                    return this.getDefaultLibFilename(options);
+                getDefaultLibFileName: (options: ts.CompilerOptions) => {
+                    return this.getDefaultLibFileName(options);
                 },
                 log: (message: string) => console.log(message),
                 trace: (message: string) => console.debug(message),
@@ -93,7 +93,7 @@ module tss {
             return path.dirname(require.resolve('typescript'));
         }
 
-        private getDefaultLibFilename(options: ts.CompilerOptions): string {
+        private getDefaultLibFileName(options: ts.CompilerOptions): string {
             if (options.target === ts.ScriptTarget.ES6) {
                 return 'lib.es6.d.ts';
             } else {
@@ -106,16 +106,16 @@ module tss {
          * to {"version":3,"sources":["foo/test.ts"],"names":[],"mappings":"AAAA,IAAI,CAAC,GAAG,MAAM,CAAC","file":"foo/test.ts","sourcesContent":["var x = 'test';"]}
          * derived from : https://github.com/thlorenz/convert-source-map
          */
-        private getInlineSourceMap(mapText: string, filename: string): string {
+        private getInlineSourceMap(mapText: string, fileName: string): string {
             var sourceMap = JSON.parse(mapText);
-            sourceMap.file = filename;
-            sourceMap.sources = [filename];
+            sourceMap.file = fileName;
+            sourceMap.sources = [fileName];
             sourceMap.sourcesContent = [this.files[FILENAME_TS].text];
             delete sourceMap.sourceRoot;
             return JSON.stringify(sourceMap);
         }
 
-        private toJavaScript(service: ts.LanguageService, filename = FILENAME_TS): string {
+        private toJavaScript(service: ts.LanguageService, fileName = FILENAME_TS): string {
             var output = service.getEmitOutput(FILENAME_TS);
 
             // Meaning of succeeded is driven by whether we need to check for semantic errors or not
@@ -136,22 +136,22 @@ module tss {
                 throw new Error(this.formatDiagnostics(allDiagnostics));
             }
 
-            var outputFilename = FILENAME_TS.replace(/ts$/, 'js');
-            var file = output.outputFiles.filter((file) => file.name === outputFilename)[0];
+            var outputFileName = FILENAME_TS.replace(/ts$/, 'js');
+            var file = output.outputFiles.filter((file) => file.name === outputFileName)[0];
             // TODO: Fixed in v1.5 https://github.com/Microsoft/TypeScript/issues/1653
             var text = file.text.replace(/\r\n/g, os.EOL);
 
             // If we have sourceMaps convert them to inline sourceMaps
             if (this.options.sourceMap) {
-                var sourceMapFilename = FILENAME_TS.replace(/ts$/, 'js.map');
-                var sourceMapFile = output.outputFiles.filter((file) => file.name === sourceMapFilename)[0];
+                var sourceMapFileName = FILENAME_TS.replace(/ts$/, 'js.map');
+                var sourceMapFile = output.outputFiles.filter((file) => file.name === sourceMapFileName)[0];
 
                 // Transform sourcemap
                 var sourceMapText = sourceMapFile.text;
-                sourceMapText = this.getInlineSourceMap(sourceMapText, filename);
+                sourceMapText = this.getInlineSourceMap(sourceMapText, fileName);
                 var base64SourceMapText = new Buffer(sourceMapText).toString('base64');
                 var sourceMapComment = '//# sourceMappingURL=data:application/json;base64,' + base64SourceMapText;
-                text = text.replace('//# sourceMappingURL=' + sourceMapFilename, sourceMapComment);
+                text = text.replace('//# sourceMappingURL=' + sourceMapFileName, sourceMapComment);
             }
 
             return text;
