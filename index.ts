@@ -81,6 +81,7 @@ module tss {
                 getDefaultLibFileName: (options: ts.CompilerOptions) => {
                     return this.getDefaultLibFileName(options);
                 },
+                getNewLine: () => os.EOL,
                 log: (message: string) => console.log(message),
                 trace: (message: string) => console.debug(message),
                 error: (message: string) => console.error(message)
@@ -131,8 +132,7 @@ module tss {
 
             var outputFileName = FILENAME_TS.replace(/ts$/, 'js');
             var file = output.outputFiles.filter((file) => file.name === outputFileName)[0];
-            // TODO: Fixed in v1.5 https://github.com/Microsoft/TypeScript/issues/1653
-            var text = file.text.replace(/\r\n/g, os.EOL);
+            var text = file.text;
 
             // If we have sourceMaps convert them to inline sourceMaps
             if (this.options.sourceMap) {
