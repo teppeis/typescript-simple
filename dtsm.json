@@ -9,7 +9,7 @@
   "bundle": "typings/bundle.d.ts",
   "dependencies": {
     "node/node.d.ts": {
-      "ref": "6425747807265d7640d73234334aa6ae56b89e87"
+      "ref": "fbb8c672d56d1cfe677b81c300f8506a31e0404c"
     }
   }
 }
