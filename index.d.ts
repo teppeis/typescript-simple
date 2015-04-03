@@ -17,7 +17,8 @@ declare module tss {
         constructor(options?: ts.CompilerOptions, doSemanticChecks?: boolean);
         /**
          * @param {string} code TypeScript source code to compile
-         * @param {string=} fileName Only needed if you plan to use sourceMaps. Provide the complete filePath relevant to you
+         * @param {string=} fileName Only needed if you plan to use sourceMaps.
+         *    Provide the complete filePath relevant to you
          * @return {string} The JavaScript with inline sourceMaps if sourceMaps were enabled
          * @throw {Error} A syntactic error or a semantic error (if doSemanticChecks is true)
          */
@@ -26,8 +27,10 @@ declare module tss {
         private getTypeScriptBinDir();
         private getDefaultLibFileName(options);
         /**
-         * converts {"version":3,"file":"file.js","sourceRoot":"","sources":["file.ts"],"names":[],"mappings":"AAAA,IAAI,CAAC,GAAG,MAAM,CAAC"}
-         * to {"version":3,"sources":["foo/test.ts"],"names":[],"mappings":"AAAA,IAAI,CAAC,GAAG,MAAM,CAAC","file":"foo/test.ts","sourcesContent":["var x = 'test';"]}
+         * converts {"version":3,"file":"file.js","sourceRoot":"","sources":["file.ts"],"names":[],
+         *    "mappings":"AAAA,IAAI,CAAC,GAAG,MAAM,CAAC"}
+         * to {"version":3,"sources":["foo/test.ts"],"names":[],
+         *    "mappings":"AAAA,IAAI,CAAC,GAAG,MAAM,CAAC","file":"foo/test.ts","sourcesContent":["var x = 'test';"]}
          * derived from : https://github.com/thlorenz/convert-source-map
          */
         private getInlineSourceMap(mapText, fileName);
