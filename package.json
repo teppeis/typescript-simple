@@ -1,6 +1,6 @@
 {
   "name": "typescript-simple",
-  "version": "1.0.2",
+  "version": "2.0.0-alpha.1",
   "description": "Simple API to compile TypeScript code string to JavaScript. That's all!",
   "main": "index.js",
   "scripts": {
@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/teppeis/typescript-simple",
   "dependencies": {
-    "typescript": "^1.5.0-alpha"
+    "typescript": "~1.5.0-alpha"
   },
   "devDependencies": {
     "mocha": "^2.1.0"
