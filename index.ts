@@ -69,12 +69,22 @@ module tss {
                 getScriptVersion: (fileName) => this.files[fileName] && this.files[fileName].version.toString(),
                 getScriptSnapshot: (fileName) => {
                     var file = this.files[fileName];
-                    return {
-                        getText: (start, end) => file.text.substring(start, end),
-                        getLength: () => file.text.length,
-                        getLineStartPositions: () => [],
-                        getChangeRange: (oldSnapshot) => undefined
-                    };
+                    if (file) {
+                        return {
+                            getText: (start, end) => file.text.substring(start, end),
+                            getLength: () => file.text.length,
+                            getLineStartPositions: (): number[]=> [],
+                            getChangeRange: (oldSnapshot) => undefined
+                        };
+                    }
+                    else { // This is some reference import
+                        return {
+                            getText: (start, end) => '',
+                            getLength: () => 0,
+                            getLineStartPositions: (): number[]=> [],
+                            getChangeRange: (oldSnapshot) => undefined
+                        };
+                    }
                 },
                 getCurrentDirectory: () => process.cwd(),
                 getScriptIsOpen: () => true,
