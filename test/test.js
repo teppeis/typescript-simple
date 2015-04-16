@@ -86,6 +86,14 @@ describe('typescript-update', function() {
             var expected = "var x = 'some string';" + eol;
             assert.equal(tss.compile(src), expected);
         });
+        
+        it('reference imports are ignored', function() {
+            var src = "/// <reference path='./typings/tsd'/>" + eol
+                    + "var x: number = 'some string';";
+            var expected = "/// <reference path='./typings/tsd'/>" + eol
+                    + "var x = 'some string';" + eol;
+            assert.equal(tss.compile(src), expected);
+        });
 
         it('syntactic errors are not ignored', function() {
             var src = "var x = 123 123;";
