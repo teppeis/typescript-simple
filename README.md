@@ -101,6 +101,10 @@ See [index.d.ts](index.d.ts).
 
 This implementation is derived from code in [an official wiki page](https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API).
 
+## Contributors
+
+* [@basarat](https://github.com/basarat)
+
 ## License
 
 MIT License: Teppei Sato &lt;teppeis@gmail.com&gt;
