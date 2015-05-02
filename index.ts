@@ -1,4 +1,3 @@
-/// <reference path="typings/node/node.d.ts" />
 /// <reference path="node_modules/typescript/bin/typescript.d.ts" />
 
 import fs = require('fs');

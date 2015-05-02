@@ -1,5 +1,5 @@
 {
-    "version": "1.4.1",
+    "version": "1.5.0",
     "compilerOptions": {
         "target": "es5",
         "module": "commonjs",
@@ -10,10 +10,10 @@
     },
     "filesGlob": [
         "./**/*.ts",
+        "!./index.d.ts",
         "!./node_modules/**/*.ts"
     ],
     "files": [
-        "./index.d.ts",
         "./index.ts",
         "./typings/bundle.d.ts",
         "./typings/node/node.d.ts"
