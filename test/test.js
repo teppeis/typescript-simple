@@ -39,21 +39,20 @@ describe('typescript-update', function() {
             var src = "var x: number = 'str';";
             assert.throws(function() {
                 tss(src);
-            }, /^Error: L1: Type 'string' is not assignable to type 'number'./);
+            }, /^Error: L0: Type 'string' is not assignable to type 'number'./);
         });
 
-        it('throws an error for ES6 "let"', function() {
-            var src = "let x: number = 1;";
-            assert.throws(function() {
-                tss(src);
-            }, /^Error: L1: 'let' declarations are only available when targeting ECMAScript 6 and higher./);
+        it('compiles ES6 "let" to "var"', function() {
+            var src = 'let x: number = 1;';
+            var expected = 'var x = 1;' + eol;
+            assert.equal(tss(src), expected);
         });
 
         it('throws an error for ES6 Promise', function() {
             var src = "var x = new Promise(function (resolve, reject) {\n});";
             assert.throws(function() {
                 tss(src);
-            }, /^Error: L1: Cannot find name 'Promise'./);
+            }, /^Error: L0: Cannot find name 'Promise'./);
         });
     });
 
@@ -63,13 +62,13 @@ describe('typescript-update', function() {
             tss = new TypeScriptSimple({target: ts.ScriptTarget.ES6});
         });
 
-        it('compiles ES6 "let"', function() {
+        it('compiles ES6 "let" to "let"', function() {
             var src = "let x: number = 1;";
             var expected = 'let x = 1;' + eol;
             assert.equal(tss.compile(src), expected);
         });
 
-        it('compiles ES6 Promise', function() {
+        it('does not throw for ES6 Promise', function() {
             var src = "var x = new Promise(function (resolve, reject) {" + eol + "});";
             var expected = src + eol;
             assert.equal(tss.compile(src), expected);
@@ -87,12 +86,20 @@ describe('typescript-update', function() {
             var expected = "var x = 'some string';" + eol;
             assert.equal(tss.compile(src), expected);
         });
+        
+        it('reference imports are ignored', function() {
+            var src = "/// <reference path='./typings/tsd'/>" + eol
+                    + "var x: number = 'some string';";
+            var expected = "/// <reference path='./typings/tsd'/>" + eol
+                    + "var x = 'some string';" + eol;
+            assert.equal(tss.compile(src), expected);
+        });
 
         it('syntactic errors are not ignored', function() {
             var src = "var x = 123 123;";
             assert.throws(function() {
                 tss.compile(src);
-            }, /^Error: L1: ',' expected./);
+            }, /^Error: L0: ',' expected./);
         });
     });
 
