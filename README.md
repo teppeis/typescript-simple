@@ -5,9 +5,15 @@ typescript-simple [![NPM version][npm-image]][npm-url] [![build status][travis-i
 
 ## Description
 
-TypeScirpt 1.4 has [official compiler API](https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API), but it isn't easy to compile tiny TypeScript code string.
+TypeScirpt has [official compiler API](https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API), but it isn't easy to compile tiny TypeScript code string.
 `typescript-simple` provides just one method that accepts TypeScript code string and returns JavaScript code.
 
+## Versioning
+
+* typescript-simple v2.x.x uses TypeScript v1.5
+* typescript-simple v1.x.x uses TypeScript v1.4
+
+Note: typescript-simple updates the major version for TypeScript's minor update including breaking changes.
 
 ## Install
 
