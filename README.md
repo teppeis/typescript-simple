@@ -1,4 +1,4 @@
-typescript-simple [![NPM version][npm-image]][npm-url] [![build status][travis-image]][travis-url] [![Dependency Status][deps-image]][deps-url]
+typescript-simple [![npm version][npm-image]][npm-url] [![downloads][npm-downloads-image]][npm-url] [![build status][travis-image]][travis-url] [![Dependency Status][deps-image]][deps-url]
 ======
 
 > Simple API to compile TypeScript code string to JavaScript. That's all!
@@ -111,6 +111,7 @@ MIT License: Teppei Sato &lt;teppeis@gmail.com&gt;
 
 [npm-image]: https://img.shields.io/npm/v/typescript-simple.svg
 [npm-url]: https://npmjs.org/package/typescript-simple
+[npm-downloads-image]: https://img.shields.io/npm/dm/typescript-simple.svg
 [travis-image]: https://travis-ci.org/teppeis/typescript-simple.svg?branch=master
 [travis-url]: https://travis-ci.org/teppeis/typescript-simple
 [deps-image]: https://david-dm.org/teppeis/typescript-simple.svg
