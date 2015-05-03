@@ -89,7 +89,7 @@ var n = 1;
 ```
 Note: The path to file doesn't need to be an actual file. We just copy the contents of the passed in ts string into the inline sourceMap and make it look like the js is coming from a ts file at that file path.
 
-## Limitaions
+## Limitations
 
 `typescript-simple` cannot compile multiple source files.
 
