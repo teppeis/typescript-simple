@@ -10,7 +10,7 @@ typescript-simple [![npm version][npm-image]][npm-url] [![downloads][npm-downloa
 ### Why?
 
 * TypeScript v1.4 doesn't have simple TS string to JS string API
-* TypeScript v1.5 has it, but source map is NOT available in the API
+* TypeScript v1.5 has [ts.transpile()](https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API#a-simple-transform-function), but it cannot generate1.4 source map
 
 ## Versioning
 
@@ -47,7 +47,7 @@ try {
 
 ### Compiler Options
 
-Specify [CompilerOptions](https://github.com/Microsoft/TypeScript/blob/v1.4/bin/typescriptServices.d.ts#L1086) at 2nd argument.
+Specify [CompilerOptions](https://github.com/Microsoft/TypeScript/blob/v1.5.0-beta/bin/typescriptServices.d.ts#L1076-L1108) at 2nd argument.
 
 ```javascript
 var js = tss('var n: number = 1;', {noImplicitAny: true});
@@ -100,10 +100,6 @@ Note: The path to file doesn't need to be an actual file. We just copy the conte
 ## API
 
 See [index.d.ts](index.d.ts).
-
-## Note
-
-This implementation is derived from code in [an official wiki page](https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API).
 
 ## Contributors
 
