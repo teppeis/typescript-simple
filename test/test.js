@@ -112,7 +112,7 @@ describe('typescript-update', function() {
         it('should result in inline sourceMaps', function() {
             var src = 'var x = "test";';
             var srcFile = 'foo/test.ts';
-            var sourceMap = '{"version":3,"file":"foo/test.ts","sources":["foo/test.ts"],"names":[],"mappings":"AAAA,IAAI,CAAC,GAAG,MAAM,CAAC","sourcesContent":["var x = \"test\";"]}';
+            var sourceMap = '{"version":3,"file":"foo/test.ts","sources":["foo/test.ts"],"names":[],"mappings":"AAAA,IAAI,CAAC,GAAG,MAAM,CAAC","sourcesContent":["var x = \\"test\\";"]}';
             var expected =
                 'var x = "test";' + eol
                 + '//# sourceMappingURL=data:application/json;base64,' + new Buffer(sourceMap).toString('base64');
