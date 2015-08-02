@@ -103,18 +103,36 @@ describe('typescript-update', function() {
         });
     });
 
-    context('sourceMaps', function() {
+    context('tss sourceMaps option is true', function() {
         var tss;
         beforeEach(function() {
             tss = new TypeScriptSimple({target: ts.ScriptTarget.ES5, sourceMap: true}, false);
         });
 
-        it('sourceMap:true should result in inline sourceMaps', function() {
+        it('should result in inline sourceMaps', function() {
             var src = 'var x = "test";';
             var srcFile = 'foo/test.ts';
+            var sourceMap = '{"version":3,"file":"foo/test.ts","sources":["foo/test.ts"],"names":[],"mappings":"AAAA,IAAI,CAAC,GAAG,MAAM,CAAC","sourcesContent":["var x = \\"test\\";"]}';
             var expected =
                 'var x = "test";' + eol
-                + '//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZm9vL3Rlc3QudHMiLCJzb3VyY2VzIjpbImZvby90ZXN0LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLElBQUksQ0FBQyxHQUFHLE1BQU0sQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbInZhciB4ID0gXCJ0ZXN0XCI7Il19';
+                + '//# sourceMappingURL=data:application/json;base64,' + new Buffer(sourceMap).toString('base64');
+            assert.equal(tss.compile(src, srcFile), expected);
+        });
+    });
+
+    context('native inlineSourceMap option is true', function() {
+        var tss;
+        beforeEach(function() {
+            tss = new TypeScriptSimple({target: ts.ScriptTarget.ES5, inlineSourceMap: true, inlineSources: true}, false);
+        });
+
+        it('should result in inline sourceMaps', function() {
+            var src = 'var x = "test";';
+            var srcFile = 'foo/test.ts';
+            var sourceMap = '{"version":3,"file":"file.js","sourceRoot":"","sources":["file.ts"],"names":[],"mappings":"AAAA,IAAI,CAAC,GAAG,MAAM,CAAC","sourcesContent":["var x = \\"test\\";"]}';
+            var expected =
+                'var x = "test";' + eol
+                + '//# sourceMappingURL=data:application/json;base64,' + new Buffer(sourceMap).toString('base64');
             assert.equal(tss.compile(src, srcFile), expected);
         });
     });
