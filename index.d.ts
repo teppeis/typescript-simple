@@ -1,4 +1,3 @@
-/// <reference path="node_modules/typescript/bin/typescript.d.ts" />
 import ts = require('typescript');
 declare function tss(code: string, options: ts.CompilerOptions): string;
 declare module tss {

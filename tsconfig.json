@@ -1,5 +1,5 @@
 {
-    "version": "1.5.0",
+    "version": "1.6.2",
     "compilerOptions": {
         "target": "es5",
         "module": "commonjs",
@@ -15,7 +15,6 @@
     ],
     "files": [
         "./index.ts",
-        "./typings/bundle.d.ts",
-        "./typings/node/node.d.ts"
+        "./typings/bundle.d.ts"
     ]
 }
