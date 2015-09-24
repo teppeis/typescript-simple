@@ -1,6 +1,6 @@
 import ts = require('typescript');
 declare function tss(code: string, options: ts.CompilerOptions): string;
-declare module tss {
+declare namespace tss {
     class TypeScriptSimple {
         private doSemanticChecks;
         private service;

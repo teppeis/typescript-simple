@@ -14,7 +14,7 @@ function tss(code: string, options: ts.CompilerOptions): string {
     }
 }
 
-module tss {
+namespace tss {
     export class TypeScriptSimple {
         private service: ts.LanguageService = null;
         private outputs: ts.Map<string> = {};
