@@ -6,7 +6,7 @@ import ts = require('typescript');
 
 var FILENAME_TS = 'file.ts';
 
-function tss(code: string, options: ts.CompilerOptions): string {
+function tss(code: string, options?: ts.CompilerOptions): string {
     if (options) {
         return new tss.TypeScriptSimple(options).compile(code);
     } else {
