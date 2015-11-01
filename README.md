@@ -11,7 +11,7 @@ typescript-simple [![npm version][npm-image]][npm-url] [![downloads][npm-downloa
 
 * TypeScript v1.4 doesn't have simple TS string to JS string API
 * TypeScript v1.5 has [ts.transpile()](https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API#a-simple-transform-function), but it cannot generate source map
-* TypeScript v1.6 has [ts.transpile()](https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API#a-simple-transform-function) with source map, but it always ignore type checking
+* TypeScript v1.6 has [ts.transpile()](https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API#a-simple-transform-function) with source map, but it always ignores type checking
 
 ## Versioning
 
