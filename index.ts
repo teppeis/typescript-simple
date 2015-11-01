@@ -1,5 +1,3 @@
-/// <reference path="node_modules/typescript/bin/typescript.d.ts" />
-
 import fs = require('fs');
 import os = require('os');
 import path = require('path');
@@ -16,7 +14,7 @@ function tss(code: string, options: ts.CompilerOptions): string {
     }
 }
 
-module tss {
+namespace tss {
     export class TypeScriptSimple {
         private service: ts.LanguageService = null;
         private outputs: ts.Map<string> = {};
@@ -86,11 +84,11 @@ module tss {
                     }
                 },
                 getCurrentDirectory: () => process.cwd(),
-                getScriptIsOpen: () => true,
                 getCompilationSettings: () => this.options,
                 getDefaultLibFileName: (options: ts.CompilerOptions) => {
                     return this.getDefaultLibFileName(options);
                 },
+                // TODO: Use options.newLine
                 getNewLine: () => os.EOL,
                 log: (message: string) => console.log(message),
                 trace: (message: string) => console.debug(message),
