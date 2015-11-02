@@ -1,5 +1,5 @@
 import ts = require('typescript');
-declare function tss(code: string, options: ts.CompilerOptions): string;
+declare function tss(code: string, options?: ts.CompilerOptions): string;
 declare namespace tss {
     class TypeScriptSimple {
         private doSemanticChecks;
