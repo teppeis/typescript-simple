@@ -136,4 +136,18 @@ describe('typescript-update', function() {
             assert.equal(tss.compile(src, srcFile), expected);
         });
     });
+
+    context('tss outDir option is specified', function() {
+        var tss;
+        beforeEach(function() {
+            tss = new TypeScriptSimple({outDir: 'built/'}, false);
+        });
+
+        it('compares output file names with the name with outDir', function() {
+            var src = "var x = 123;";
+            assert.doesNotThrow(function() {
+                tss.compile(src);
+            }, /Cannot read property 'text'/);
+        });
+    });
 });

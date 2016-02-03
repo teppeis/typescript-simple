@@ -140,7 +140,8 @@ namespace tss {
                 throw new Error(this.formatDiagnostics(allDiagnostics));
             }
 
-            var outputFileName = FILENAME_TS.replace(/ts$/, 'js');
+            var outDir = 'outDir' in this.options ? this.options.outDir : '.';
+            var outputFileName = path.join(outDir, FILENAME_TS.replace(/ts$/, 'js'));
             var file = output.outputFiles.filter((file) => file.name === outputFileName)[0];
             var text = file.text;
 
