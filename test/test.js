@@ -147,7 +147,7 @@ describe('typescript-update', function() {
             var src = "var x = 123;";
             assert.doesNotThrow(function() {
                 tss.compile(src);
-            }, /Cannot read property 'text'/);
+            });
         });
     });
 });
