@@ -22,9 +22,9 @@
   },
   "homepage": "https://github.com/teppeis/typescript-simple",
   "dependencies": {
-    "typescript": "^1.6.2"
+    "typescript": "^1.7.5"
   },
   "devDependencies": {
-    "mocha": "^2.1.0"
+    "mocha": "^2.4.5"
   }
 }
