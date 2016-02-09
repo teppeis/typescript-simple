@@ -164,4 +164,33 @@ describe('typescript-simple', function() {
             });
         });
     });
+
+    describe('JSX', function() {
+        it('compiles JSX string (Preserve)', function() {
+            var tss = new TypeScriptSimple({jsx: ts.JsxEmit.Preserve});
+            var src = 'var foo: any = <bar />;';
+            var expected = 'var foo = <bar />;' + eol;
+            assert.equal(tss.compile(src), expected);
+        });
+
+        it('compiles JSX string (React)', function() {
+            var tss = new TypeScriptSimple({jsx: ts.JsxEmit.React}, false);
+            var src = 'var foo: any = <bar />;';
+            var expected = 'var foo = React.createElement("bar", null);' + eol;
+            assert.equal(tss.compile(src), expected);
+        });
+
+        it('should result in inline sourceMaps', function() {
+            var tss = new TypeScriptSimple({jsx: ts.JsxEmit.Preserve, sourceMap: true});
+            var src = 'var foo: any = <bar />;';
+            var srcFile = 'foo/test.tsx';
+            var sourceMap = '{"version":3,"file":"foo/test.tsx","sources":["foo/test.tsx"],"names":[],"mappings":"AAAA,IAAI,GAAG,GAAQ,CAAC,GAAG,GAAG,CAAC","sourcesContent":["var foo: any = <bar />;"]}';
+            var expectedPrefix = 'var foo = <bar />;' + eol + '//# sourceMappingURL=data:application/json;base64,';
+            var actual = tss.compile(src, srcFile);
+            var match = /(^[\s\S]*;base64,)(.*)$/.exec(actual);
+            assert(match);
+            assert.equal(match[1], expectedPrefix);
+            assert.deepEqual(JSON.parse(new Buffer(match[2], 'base64').toString()), JSON.parse(sourceMap));
+        });
+    });
 });

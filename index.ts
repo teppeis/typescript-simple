@@ -5,6 +5,7 @@ import path = require('path');
 import ts = require('typescript');
 
 var FILENAME_TS = 'file.ts';
+var FILENAME_TSX = 'file.tsx';
 
 function tss(code: string, options?: ts.CompilerOptions): string {
     if (options) {
@@ -45,7 +46,17 @@ namespace tss {
          * @return {string} The JavaScript with inline sourceMaps if sourceMaps were enabled
          * @throw {Error} A syntactic error or a semantic error (if doSemanticChecks is true)
          */
-        compile(code: string, fileName = FILENAME_TS): string {
+        compile(code: string, fileName?: string): string {
+            if (!fileName) {
+                if (this.options.jsx === ts.JsxEmit.Preserve) {
+                    fileName = FILENAME_TSX;
+                } else if (this.options.jsx === ts.JsxEmit.React) {
+                    fileName = FILENAME_TSX;
+                } else {
+                    fileName = FILENAME_TS;
+                }
+            }
+
             if (!this.service) {
                 this.service = this.createService();
             }
@@ -131,7 +142,7 @@ namespace tss {
             return JSON.stringify(sourceMap);
         }
 
-        private toJavaScript(service: ts.LanguageService, fileName = FILENAME_TS): string {
+        private toJavaScript(service: ts.LanguageService, fileName: string): string {
             var output = service.getEmitOutput(fileName);
 
             var allDiagnostics = service.getCompilerOptionsDiagnostics()
@@ -146,14 +157,19 @@ namespace tss {
             }
 
             var outDir = 'outDir' in this.options ? this.options.outDir : '.';
-            // var outputFileName = path.join(outDir, fileName.replace(/\.tsx$/, '.jsx'));
-            var outputFileName = path.join(outDir, fileName.replace(/\.ts$/, '.js'));
+            // .ts => .js, .tsx => .jsx (options.jsx=JsxEmit.Preserve)
+            var outputFileName: string;
+            if (this.options.jsx === ts.JsxEmit.Preserve) {
+                outputFileName = path.join(outDir, fileName.replace(/\.tsx$/, '.jsx'));
+            } else {
+                outputFileName = path.join(outDir, fileName.replace(/\.tsx?$/, '.js'));
+            }
             var file = output.outputFiles.filter((file) => file.name === outputFileName)[0];
             var text = file.text;
 
             // If we have sourceMaps convert them to inline sourceMaps
             if (this.options.sourceMap) {
-                var sourceMapFileName = fileName.replace(/\.ts$/, '.js.map');
+                var sourceMapFileName = outputFileName + '.map';
                 var sourceMapFile = output.outputFiles.filter((file) => file.name === sourceMapFileName)[0];
 
                 // Transform sourcemap

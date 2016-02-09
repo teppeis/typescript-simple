@@ -32,7 +32,7 @@ declare namespace tss {
          * derived from : https://github.com/thlorenz/convert-source-map
          */
         private getInlineSourceMap(mapText, fileName);
-        private toJavaScript(service, fileName?);
+        private toJavaScript(service, fileName);
         private formatDiagnostics(diagnostics);
     }
 }
