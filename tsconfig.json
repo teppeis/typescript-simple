@@ -6,6 +6,7 @@
         "declaration": true,
         "noImplicitAny": true,
         "removeComments": false,
+        "stripInternal": true,
         "noLib": false
     },
     "filesGlob": [
