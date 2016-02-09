@@ -79,6 +79,25 @@ var js = tss.compile('var n: string = 1;'); // an error is not thrown.
 
 Note: *syntactic* errors may be thrown.
 
+### JSX (.tsx)
+
+- `--jsx=preserve`
+
+```javascript
+var jsx = tss.compile('var foo: any = <Foo />;', {jsx: ts.JsxEmit.Preserve});
+console.log(jsx); // 'var foo = <Foo />;'
+```
+
+- `--jsx=react`
+
+```javascript
+var tss = new TypeScriptSimple({jsx: ts.JsxEmit.React}, false);
+var js = tss.compile('var foo: any = <Foo />;');
+console.log(js); // 'var foo = React.createElement("Foo", null);'
+```
+
+Note: Ignore semantic errors if you use `JsxEmit.React`.
+
 ### Source map
 
 Inline source map is available.

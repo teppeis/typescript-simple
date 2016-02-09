@@ -5,6 +5,7 @@ import path = require('path');
 import ts = require('typescript');
 
 var FILENAME_TS = 'file.ts';
+var FILENAME_TSX = 'file.tsx';
 
 function tss(code: string, options?: ts.CompilerOptions): string {
     if (options) {
@@ -45,14 +46,28 @@ namespace tss {
          * @return {string} The JavaScript with inline sourceMaps if sourceMaps were enabled
          * @throw {Error} A syntactic error or a semantic error (if doSemanticChecks is true)
          */
-        compile(code: string, fileName = FILENAME_TS): string {
+        compile(code: string, fileName?: string): string {
+            if (!fileName) {
+                if (this.options.jsx === ts.JsxEmit.Preserve) {
+                    fileName = FILENAME_TSX;
+                } else if (this.options.jsx === ts.JsxEmit.React) {
+                    fileName = FILENAME_TSX;
+                } else {
+                    fileName = FILENAME_TS;
+                }
+            }
+
             if (!this.service) {
                 this.service = this.createService();
             }
 
-            var file = this.files[FILENAME_TS];
-            file.text = code;
-            file.version++;
+            var file = this.files[fileName];
+            if (file) {
+                file.text = code;
+                file.version++;
+            } else {
+                this.files[fileName] = { version: 0, text: code };
+            }
 
             return this.toJavaScript(this.service, fileName);
         }
@@ -61,10 +76,9 @@ namespace tss {
             var defaultLib = this.getDefaultLibFileName(this.options);
             var defaultLibPath = path.join(this.getTypeScriptBinDir(), defaultLib);
             this.files[defaultLib] = { version: 0, text: fs.readFileSync(defaultLibPath).toString() };
-            this.files[FILENAME_TS] = { version: 0, text: '' };
 
             var serviceHost: ts.LanguageServiceHost = {
-                getScriptFileNames: () => [this.getDefaultLibFileName(this.options), FILENAME_TS],
+                getScriptFileNames: () => [this.getDefaultLibFileName(this.options)].concat(Object.keys(this.files)),
                 getScriptVersion: (fileName) => this.files[fileName] && this.files[fileName].version.toString(),
                 getScriptSnapshot: (fileName) => {
                     var file = this.files[fileName];
@@ -123,19 +137,19 @@ namespace tss {
             var sourceMap = JSON.parse(mapText);
             sourceMap.file = fileName;
             sourceMap.sources = [fileName];
-            sourceMap.sourcesContent = [this.files[FILENAME_TS].text];
+            sourceMap.sourcesContent = [this.files[fileName].text];
             delete sourceMap.sourceRoot;
             return JSON.stringify(sourceMap);
         }
 
-        private toJavaScript(service: ts.LanguageService, fileName = FILENAME_TS): string {
-            var output = service.getEmitOutput(FILENAME_TS);
+        private toJavaScript(service: ts.LanguageService, fileName: string): string {
+            var output = service.getEmitOutput(fileName);
 
             var allDiagnostics = service.getCompilerOptionsDiagnostics()
-                .concat(service.getSyntacticDiagnostics(FILENAME_TS));
+                .concat(service.getSyntacticDiagnostics(fileName));
 
             if (this.doSemanticChecks) {
-                allDiagnostics = allDiagnostics.concat(service.getSemanticDiagnostics(FILENAME_TS));
+                allDiagnostics = allDiagnostics.concat(service.getSemanticDiagnostics(fileName));
             }
 
             if (allDiagnostics.length) {
@@ -143,13 +157,19 @@ namespace tss {
             }
 
             var outDir = 'outDir' in this.options ? this.options.outDir : '.';
-            var outputFileName = path.join(outDir, FILENAME_TS.replace(/ts$/, 'js'));
+            // .ts => .js, .tsx => .jsx (options.jsx=JsxEmit.Preserve)
+            var outputFileName: string;
+            if (this.options.jsx === ts.JsxEmit.Preserve) {
+                outputFileName = path.join(outDir, fileName.replace(/\.tsx$/, '.jsx'));
+            } else {
+                outputFileName = path.join(outDir, fileName.replace(/\.tsx?$/, '.js'));
+            }
             var file = output.outputFiles.filter((file) => file.name === outputFileName)[0];
             var text = file.text;
 
             // If we have sourceMaps convert them to inline sourceMaps
             if (this.options.sourceMap) {
-                var sourceMapFileName = FILENAME_TS.replace(/ts$/, 'js.map');
+                var sourceMapFileName = outputFileName + '.map';
                 var sourceMapFile = output.outputFiles.filter((file) => file.name === sourceMapFileName)[0];
 
                 // Transform sourcemap
@@ -157,7 +177,7 @@ namespace tss {
                 sourceMapText = this.getInlineSourceMap(sourceMapText, fileName);
                 var base64SourceMapText = new Buffer(sourceMapText).toString('base64');
                 var sourceMapComment = '//# sourceMappingURL=data:application/json;base64,' + base64SourceMapText;
-                text = text.replace('//# sourceMappingURL=' + sourceMapFileName, sourceMapComment);
+                text = text.replace('//# sourceMappingURL=' + path.basename(sourceMapFileName), sourceMapComment);
             }
 
             return text;
