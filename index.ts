@@ -131,6 +131,7 @@ namespace tss {
          * to {"version":3,"sources":["foo/test.ts"],"names":[],
          *    "mappings":"AAAA,IAAI,CAAC,GAAG,MAAM,CAAC","file":"foo/test.ts","sourcesContent":["var x = 'test';"]}
          * derived from : https://github.com/thlorenz/convert-source-map
+         * @internal
          */
         private getInlineSourceMap(mapText: string, fileName: string): string {
             let sourceMap = JSON.parse(mapText);
