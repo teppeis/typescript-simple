@@ -4,8 +4,8 @@ import path = require('path');
 
 import ts = require('typescript');
 
-var FILENAME_TS = 'file.ts';
-var FILENAME_TSX = 'file.tsx';
+const FILENAME_TS = 'file.ts';
+const FILENAME_TSX = 'file.tsx';
 
 function tss(code: string, options?: ts.CompilerOptions): string {
     if (options) {
@@ -61,7 +61,7 @@ namespace tss {
                 this.service = this.createService();
             }
 
-            var file = this.files[fileName];
+            let file = this.files[fileName];
             if (file) {
                 file.text = code;
                 file.version++;
@@ -73,28 +73,27 @@ namespace tss {
         }
 
         private createService(): ts.LanguageService {
-            var defaultLib = this.getDefaultLibFileName(this.options);
-            var defaultLibPath = path.join(this.getTypeScriptBinDir(), defaultLib);
+            let defaultLib = this.getDefaultLibFileName(this.options);
+            let defaultLibPath = path.join(this.getTypeScriptBinDir(), defaultLib);
             this.files[defaultLib] = { version: 0, text: fs.readFileSync(defaultLibPath).toString() };
 
-            var serviceHost: ts.LanguageServiceHost = {
+            let serviceHost: ts.LanguageServiceHost = {
                 getScriptFileNames: () => [this.getDefaultLibFileName(this.options)].concat(Object.keys(this.files)),
                 getScriptVersion: (fileName) => this.files[fileName] && this.files[fileName].version.toString(),
                 getScriptSnapshot: (fileName) => {
-                    var file = this.files[fileName];
+                    let file = this.files[fileName];
                     if (file) {
                         return {
                             getText: (start, end) => file.text.substring(start, end),
                             getLength: () => file.text.length,
-                            getLineStartPositions: (): number[]=> [],
+                            getLineStartPositions: (): number[] => [],
                             getChangeRange: (oldSnapshot) => undefined
                         };
-                    }
-                    else { // This is some reference import
+                    } else { // This is some reference import
                         return {
                             getText: (start, end) => '',
                             getLength: () => 0,
-                            getLineStartPositions: (): number[]=> [],
+                            getLineStartPositions: (): number[] => [],
                             getChangeRange: (oldSnapshot) => undefined
                         };
                     }
@@ -134,7 +133,7 @@ namespace tss {
          * derived from : https://github.com/thlorenz/convert-source-map
          */
         private getInlineSourceMap(mapText: string, fileName: string): string {
-            var sourceMap = JSON.parse(mapText);
+            let sourceMap = JSON.parse(mapText);
             sourceMap.file = fileName;
             sourceMap.sources = [fileName];
             sourceMap.sourcesContent = [this.files[fileName].text];
@@ -143,9 +142,9 @@ namespace tss {
         }
 
         private toJavaScript(service: ts.LanguageService, fileName: string): string {
-            var output = service.getEmitOutput(fileName);
+            let output = service.getEmitOutput(fileName);
 
-            var allDiagnostics = service.getCompilerOptionsDiagnostics()
+            let allDiagnostics = service.getCompilerOptionsDiagnostics()
                 .concat(service.getSyntacticDiagnostics(fileName));
 
             if (this.doSemanticChecks) {
@@ -156,27 +155,26 @@ namespace tss {
                 throw new Error(this.formatDiagnostics(allDiagnostics));
             }
 
-            var outDir = 'outDir' in this.options ? this.options.outDir : '.';
-            // .ts => .js, .tsx => .jsx (options.jsx=JsxEmit.Preserve)
-            var outputFileName: string;
+            let outDir = 'outDir' in this.options ? this.options.outDir : '.';
+            let outputFileName: string;
             if (this.options.jsx === ts.JsxEmit.Preserve) {
                 outputFileName = path.join(outDir, fileName.replace(/\.tsx$/, '.jsx'));
             } else {
                 outputFileName = path.join(outDir, fileName.replace(/\.tsx?$/, '.js'));
             }
-            var file = output.outputFiles.filter((file) => file.name === outputFileName)[0];
-            var text = file.text;
+            let file = output.outputFiles.filter((file) => file.name === outputFileName)[0];
+            let text = file.text;
 
             // If we have sourceMaps convert them to inline sourceMaps
             if (this.options.sourceMap) {
-                var sourceMapFileName = outputFileName + '.map';
-                var sourceMapFile = output.outputFiles.filter((file) => file.name === sourceMapFileName)[0];
+                let sourceMapFileName = outputFileName + '.map';
+                let sourceMapFile = output.outputFiles.filter((file) => file.name === sourceMapFileName)[0];
 
                 // Transform sourcemap
-                var sourceMapText = sourceMapFile.text;
+                let sourceMapText = sourceMapFile.text;
                 sourceMapText = this.getInlineSourceMap(sourceMapText, fileName);
-                var base64SourceMapText = new Buffer(sourceMapText).toString('base64');
-                var sourceMapComment = '//# sourceMappingURL=data:application/json;base64,' + base64SourceMapText;
+                let base64SourceMapText = new Buffer(sourceMapText).toString('base64');
+                let sourceMapComment = '//# sourceMappingURL=data:application/json;base64,' + base64SourceMapText;
                 text = text.replace('//# sourceMappingURL=' + path.basename(sourceMapFileName), sourceMapComment);
             }
 
@@ -195,6 +193,6 @@ namespace tss {
     }
 }
 
-var defaultTss = new tss.TypeScriptSimple();
+const defaultTss = new tss.TypeScriptSimple();
 
 export = tss;
