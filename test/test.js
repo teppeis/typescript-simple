@@ -123,10 +123,12 @@ describe('typescript-simple', function() {
             var src = 'var x = "test";';
             var srcFile = 'foo/test.ts';
             var sourceMap = '{"version":3,"file":"foo/test.ts","sources":["foo/test.ts"],"names":[],"mappings":"AAAA,IAAI,CAAC,GAAG,MAAM,CAAC","sourcesContent":["var x = \\"test\\";"]}';
-            var expected =
-                'var x = "test";' + eol
-                + '//# sourceMappingURL=data:application/json;base64,' + new Buffer(sourceMap).toString('base64');
-            assert.equal(tss.compile(src, srcFile), expected);
+            var expectedPrefix = 'var x = "test";' + eol + '//# sourceMappingURL=data:application/json;base64,';
+            var actual = tss.compile(src, srcFile);
+            var match = /(^[\s\S]*;base64,)(.*)$/.exec(actual);
+            assert(match);
+            assert.equal(match[1], expectedPrefix);
+            assert.deepEqual(JSON.parse(new Buffer(match[2], 'base64').toString()), JSON.parse(sourceMap));
         });
     });
 
@@ -139,11 +141,13 @@ describe('typescript-simple', function() {
         it('should result in inline sourceMaps', function() {
             var src = 'var x = "test";';
             var srcFile = 'foo/test.ts';
-            var sourceMap = '{"version":3,"file":"file.js","sourceRoot":"","sources":["file.ts"],"names":[],"mappings":"AAAA,IAAI,CAAC,GAAG,MAAM,CAAC","sourcesContent":["var x = \\"test\\";"]}';
-            var expected =
-                'var x = "test";' + eol
-                + '//# sourceMappingURL=data:application/json;base64,' + new Buffer(sourceMap).toString('base64');
-            assert.equal(tss.compile(src, srcFile), expected);
+            var sourceMap = '{"version":3,"file":"test.js","sourceRoot":"","sources":["test.ts"],"names":[],"mappings":"AAAA,IAAI,CAAC,GAAG,MAAM,CAAC","sourcesContent":["var x = \\"test\\";"]}';
+            var expectedPrefix = 'var x = "test";' + eol + '//# sourceMappingURL=data:application/json;base64,';
+            var actual = tss.compile(src, srcFile);
+            var match = /(^[\s\S]*;base64,)(.*)$/.exec(actual);
+            assert(match);
+            assert.equal(match[1], expectedPrefix);
+            assert.deepEqual(JSON.parse(new Buffer(match[2], 'base64').toString()), JSON.parse(sourceMap));
         });
     });
 
