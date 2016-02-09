@@ -7,7 +7,17 @@ var ts = require('typescript');
 var tss = require('../');
 var TypeScriptSimple = tss.TypeScriptSimple;
 
-describe('typescript-update', function() {
+describe('typescript-simple', function() {
+    describe('constructor', function() {
+        it('accepts no arguments', function() {
+            var sut = new TypeScriptSimple();
+            assert(sut instanceof TypeScriptSimple);
+        });
+        it('accepts null as options', function() {
+            var sut = new TypeScriptSimple(null);
+            assert(sut instanceof TypeScriptSimple);
+        });
+    });
     context('default target (ES5)', function() {
         it('compiles correct code', function() {
             var src = "var x: number = 1;";

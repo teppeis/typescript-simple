@@ -27,6 +27,7 @@ namespace tss {
          * @constructor
          */
         constructor(options: ts.CompilerOptions = {}, private doSemanticChecks = true) {
+            // accept null
             options = options || {};
             if (options.target == null) {
                 options.target = ts.ScriptTarget.ES5;
