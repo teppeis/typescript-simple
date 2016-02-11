@@ -1,5 +1,8 @@
 {
   "name": "typescript-simple",
+  "description": "Simple API to compile TypeScript code string to JavaScript. That's all!",
+  "main": "index.d.ts",
+  "author": "Teppei Sato <teppeis@gmail.com>",
   "dependencies": {},
   "devDependencies": {},
   "ambientDependencies": {
