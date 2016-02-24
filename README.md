@@ -19,6 +19,7 @@ typescript-simple [![npm version][npm-image]][npm-url] [![downloads][npm-downloa
 * typescript-simple v2.x.x uses TypeScript v1.5
 * typescript-simple v3.x.x uses TypeScript v1.6
 * typescript-simple v4.x.x uses TypeScript v1.7
+* typescript-simple v5.x.x uses TypeScript v1.8
 
 Note: typescript-simple updates the major version for TypeScript's minor update including breaking changes.
 
@@ -50,7 +51,7 @@ try {
 
 ### Compiler Options
 
-Specify [CompilerOptions](https://github.com/Microsoft/TypeScript/blob/v1.5.0-beta/bin/typescriptServices.d.ts#L1076-L1108) at 2nd argument.
+Specify [CompilerOptions](https://github.com/Microsoft/TypeScript/blob/0f67f4b6f1589756906782f1ac02e6931e1cff13/lib/typescript.d.ts#L1445-L1500) at 2nd argument.
 
 ```javascript
 var js = tss('var n: number = 1;', {noImplicitAny: true});
