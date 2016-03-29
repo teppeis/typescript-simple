@@ -163,6 +163,8 @@ namespace tss {
             } else {
                 outputFileName = path.join(outDir, fileName.replace(/\.tsx?$/, '.js'));
             }
+            // for Windows #37
+            outputFileName = this.normalizeSlashes(outputFileName);
             let file = output.outputFiles.filter((file) => file.name === outputFileName)[0];
             let text = file.text;
 
@@ -180,6 +182,10 @@ namespace tss {
             }
 
             return text;
+        }
+
+        private normalizeSlashes(path: string): string {
+            return path.replace(/\\/g, "/");
         }
 
         private formatDiagnostics(diagnostics: ts.Diagnostic[]): string {
