@@ -1,7 +1,15 @@
-typescript-simple [![npm version][npm-image]][npm-url] [![downloads][npm-downloads-image]][npm-url] [![build status][travis-image]][travis-url] [![Dependency Status][deps-image]][deps-url]
+typescript-simple
 ======
 
-> Simple API to compile TypeScript code string to JavaScript. That's all!
+Simple API to compile TypeScript code string to JavaScript. That's all!
+
+[![npm version][npm-image]][npm-url]
+[![npm downloads][npm-downloads-image]][npm-url]
+![Node.js Version Support][node-version]
+[![build status][travis-image]][travis-url]
+[![windows build status][appveyor-image]][appveyor-url]
+[![dependency status][deps-image]][deps-url]
+![License][license]
 
 ## Description
 
@@ -135,7 +143,13 @@ MIT License: Teppei Sato &lt;teppeis@gmail.com&gt;
 [npm-image]: https://img.shields.io/npm/v/typescript-simple.svg
 [npm-url]: https://npmjs.org/package/typescript-simple
 [npm-downloads-image]: https://img.shields.io/npm/dm/typescript-simple.svg
-[travis-image]: https://travis-ci.org/teppeis/typescript-simple.svg?branch=master
+[travis-image]: https://img.shields.io/travis/teppeis/typescript-simple/master.svg
 [travis-url]: https://travis-ci.org/teppeis/typescript-simple
-[deps-image]: https://david-dm.org/teppeis/typescript-simple.svg
+[deps-image]: https://img.shields.io/david/teppeis/typescript-simple.svg
 [deps-url]: https://david-dm.org/teppeis/typescript-simple
+[node-version]: https://img.shields.io/badge/Node.js%20support-v0.12–v5-brightgreen.svg
+[coverage-image]: https://img.shields.io/coveralls/teppeis/typescript-simple/master.svg
+[coverage-url]: https://coveralls.io/github/teppeis/typescript-simple?branch=master
+[license]: https://img.shields.io/npm/l/typescript-simple.svg
+[appveyor-image]: https://ci.appveyor.com/api/projects/status/22nwyfaf5p0yw54j/branch/master?svg=true
+[appveyor-url]: https://ci.appveyor.com/project/teppeis/typescript-simple/branch/master
