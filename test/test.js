@@ -165,6 +165,20 @@ describe('typescript-simple', function() {
         });
     });
 
+    context('tss outDir and rootDir options are specified', function() {
+        var tss;
+        beforeEach(function() {
+            tss = new TypeScriptSimple({outDir: 'built/', rootDir: 'src'}, false);
+        });
+
+        it('compares output file names with the name with outDir without rootDir', function() {
+            var src = "var x = 123;";
+            assert.doesNotThrow(function() {
+                tss.compile(src, 'src/file.ts');
+            });
+        });
+    });
+
     describe('JSX', function() {
         it('compiles JSX string (Preserve)', function() {
             var tss = new TypeScriptSimple({jsx: ts.JsxEmit.Preserve});
