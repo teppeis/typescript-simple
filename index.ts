@@ -157,11 +157,12 @@ namespace tss {
             }
 
             let outDir = 'outDir' in this.options ? this.options.outDir : '.';
+            let fileNameWithoutRoot = 'rootDir' in this.options ? fileName.replace(new RegExp('^' + this.options.rootDir), '') : fileName;
             let outputFileName: string;
             if (this.options.jsx === ts.JsxEmit.Preserve) {
-                outputFileName = path.join(outDir, fileName.replace(/\.tsx$/, '.jsx'));
+                outputFileName = path.join(outDir, fileNameWithoutRoot.replace(/\.tsx$/, '.jsx'));
             } else {
-                outputFileName = path.join(outDir, fileName.replace(/\.tsx?$/, '.js'));
+                outputFileName = path.join(outDir, fileNameWithoutRoot.replace(/\.tsx?$/, '.js'));
             }
             // for Windows #37
             outputFileName = this.normalizeSlashes(outputFileName);
