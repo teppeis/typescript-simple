@@ -143,7 +143,11 @@ namespace tss {
         }
 
         private getFile (outputFiles: ts.OutputFile[], fileName: string): ts.OutputFile {
-            return outputFiles.filter((file) => file.name === fileName)[0]
+            const files = outputFiles.filter((file) => {
+              const full = path.resolve(process.cwd(), fileName);
+              return file.name === fileName || file.name === full;
+            });
+            return files[0];
         }
 
         private toJavaScript(service: ts.LanguageService, fileName: string): string {
