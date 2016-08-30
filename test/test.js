@@ -212,14 +212,14 @@ describe('typescript-simple', function() {
       var tss = new TypeScriptSimple();
       var src = "let x: number = 1;";
       var expected = 'var x = 1;' + eol;
-      assert.equal(tss.compile(src, __dirname + '/fixtures/module.ts'), expected);
+      assert.equal(tss.compile(src, path.join(__dirname, 'module.ts')), expected);
     });
 
     it('compiles source multiple times with relative and absolute path (#47)', function() {
       var tss = new TypeScriptSimple({});
       var src = "var x: number = 1;";
       var expected = 'var x = 1;' + eol;
-      assert.equal(tss.compile(src, __dirname + '/fixtures/module.ts'), expected);
-      assert.equal(tss.compile(src, 'test/fixtures/module.ts'), expected);
+      assert.equal(tss.compile(src, path.join(__dirname, 'module.ts')), expected);
+      assert.equal(tss.compile(src, path.join('test', 'module.ts')), expected);
     });
 });
