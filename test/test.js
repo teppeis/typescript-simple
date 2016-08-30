@@ -207,4 +207,11 @@ describe('typescript-simple', function() {
             assert.deepEqual(JSON.parse(new Buffer(match[2], 'base64').toString()), JSON.parse(sourceMap));
         });
     });
+
+    it('compiles source with an absolute path', function() {
+      var tss = new TypeScriptSimple();
+      var src = "let x: number = 1;";
+      var expected = 'var x = 1;' + eol;
+      assert.equal(tss.compile(src, __dirname + '/fixtures/module1.ts'), expected);
+    });
 });
