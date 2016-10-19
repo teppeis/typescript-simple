@@ -18,9 +18,9 @@ function tss(code: string, options?: ts.CompilerOptions): string {
 namespace tss {
     export class TypeScriptSimple {
         private service: ts.LanguageService = null;
-        private outputs: ts.Map<string> = {};
+        private outputs: ts.Map<string> = {} as ts.Map<string>;
         private options: ts.CompilerOptions;
-        private files: ts.Map<{ version: number; text: string; }> = {};
+        private files: ts.Map<{ version: number; text: string; }> = {} as ts.Map<{ version: number; text: string; }>;
 
         /**
          * @param {ts.CompilerOptions=} options TypeScript compile options (some options are ignored)
