@@ -28,6 +28,7 @@ Simple API to compile TypeScript code string to JavaScript. That's all!
 * typescript-simple v3.x.x uses TypeScript v1.6
 * typescript-simple v4.x.x uses TypeScript v1.7
 * typescript-simple v5.x.x uses TypeScript v1.8
+* typescript-simple v6.x.x uses TypeScript v2.0
 
 Note: typescript-simple updates the major version for TypeScript's minor update including breaking changes.
 
@@ -147,7 +148,7 @@ MIT License: Teppei Sato &lt;teppeis@gmail.com&gt;
 [travis-url]: https://travis-ci.org/teppeis/typescript-simple
 [deps-image]: https://img.shields.io/david/teppeis/typescript-simple.svg
 [deps-url]: https://david-dm.org/teppeis/typescript-simple
-[node-version]: https://img.shields.io/badge/Node.js%20support-v0.12–v5-brightgreen.svg
+[node-version]: https://img.shields.io/badge/Node.js%20support-v0.12–v6-brightgreen.svg
 [coverage-image]: https://img.shields.io/coveralls/teppeis/typescript-simple/master.svg
 [coverage-url]: https://coveralls.io/github/teppeis/typescript-simple?branch=master
 [license]: https://img.shields.io/npm/l/typescript-simple.svg
