@@ -4,7 +4,6 @@ declare namespace tss {
     class TypeScriptSimple {
         private doSemanticChecks;
         private service;
-        private outputs;
         private options;
         private files;
         /**

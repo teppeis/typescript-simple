@@ -45,6 +45,24 @@ describe('typescript-simple', function() {
             assert.equal(tss(src), expected);
         });
 
+        it('compiles valid TypeScript 2.x code', function() {
+            var src = `
+            class Person {
+                readonly name: string;
+
+                constructor(name: string) {
+                    if (name.length < 1) {
+                        throw new Error("Empty name!");
+                    }
+
+                    this.name = name;
+                }
+            }
+            `;
+
+            tss(src);
+        });
+
         it('throws an error for a type error', function() {
             var src = "var x: number = 'str';";
             assert.throws(function() {

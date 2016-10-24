@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/teppeis/typescript-simple",
   "dependencies": {
-    "typescript": "^1.8.2"
+    "typescript": "^2.0.3"
   },
   "devDependencies": {
     "mocha": "^2.4.5"
