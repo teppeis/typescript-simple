@@ -1,6 +1,6 @@
 {
   "name": "typescript-simple",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "description": "Simple API to compile TypeScript code string to JavaScript. That's all!",
   "main": "index.js",
   "engines": {
