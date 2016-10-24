@@ -142,6 +142,14 @@ namespace tss {
             return JSON.stringify(sourceMap);
         }
 
+        private getFile (outputFiles: ts.OutputFile[], fileName: string): ts.OutputFile {
+            const files = outputFiles.filter((file) => {
+              const full = path.resolve(process.cwd(), fileName);
+              return file.name === fileName || file.name === full;
+            });
+            return files[0];
+        }
+
         private toJavaScript(service: ts.LanguageService, fileName: string): string {
             let output = service.getEmitOutput(fileName);
 
@@ -166,13 +174,13 @@ namespace tss {
             }
             // for Windows #37
             outputFileName = this.normalizeSlashes(outputFileName);
-            let file = output.outputFiles.filter((file) => file.name === outputFileName)[0];
+            let file = this.getFile(output.outputFiles, outputFileName);
             let text = file.text;
 
             // If we have sourceMaps convert them to inline sourceMaps
             if (this.options.sourceMap) {
                 let sourceMapFileName = outputFileName + '.map';
-                let sourceMapFile = output.outputFiles.filter((file) => file.name === sourceMapFileName)[0];
+                let sourceMapFile = this.getFile(output.outputFiles, sourceMapFileName)
 
                 // Transform sourcemap
                 let sourceMapText = sourceMapFile.text;
