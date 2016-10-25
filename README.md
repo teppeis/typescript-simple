@@ -23,7 +23,7 @@ Simple API to compile TypeScript code string to JavaScript. That's all!
 
 ## Known issues
 
-- Windows: `TypeError: Cannot read property 'text' of undefined error.` ([#47](https://github.com/teppeis/typescript-simple/pull/47))
+- [Windows only] `TypeError: Cannot read property 'text' of undefined` ([#56](https://github.com/teppeis/typescript-simple/issues/56))
 
 ## Versioning
 
