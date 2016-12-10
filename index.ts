@@ -118,10 +118,17 @@ namespace tss {
         }
 
         private getDefaultLibFileName(options: ts.CompilerOptions): string {
-            if (options.target === ts.ScriptTarget.ES6) {
-                return 'lib.es6.d.ts';
-            } else {
-                return 'lib.d.ts';
+            switch (options.target) {
+                case ts.ScriptTarget.ES2015:
+                    return 'lib.es6.d.ts';
+                case ts.ScriptTarget.ES2016:
+                    return 'lib.es2016.d.ts';
+                case ts.ScriptTarget.ES2017:
+                case ts.ScriptTarget.ESNext:
+                case ts.ScriptTarget.Latest:
+                    return 'lib.es2017.d.ts';
+                default:
+                    return 'lib.d.ts';
             }
         }
 
