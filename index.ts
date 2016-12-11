@@ -78,10 +78,17 @@ namespace tss {
             this.files[defaultLib] = { version: 0, text: fs.readFileSync(defaultLibPath).toString() };
 
             let serviceHost: ts.LanguageServiceHost = {
-                getScriptFileNames: () => [this.getDefaultLibFileName(this.options)].concat(Object.keys(this.files)),
+                getScriptFileNames: () => Object.keys(this.files),
                 getScriptVersion: (fileName) => this.files[fileName] && this.files[fileName].version.toString(),
                 getScriptSnapshot: (fileName) => {
                     let file = this.files[fileName];
+                    if (!file) {
+                        // default lib
+                        let defaultLibPath = path.join(this.getTypeScriptBinDir(), fileName);
+                        if (fs.existsSync(defaultLibPath)) {
+                            file = this.files[fileName] = {version: 0, text: fs.readFileSync(defaultLibPath).toString()};
+                        }
+                    }
                     if (file) {
                         return {
                             getText: (start, end) => file.text.substring(start, end),
@@ -89,7 +96,8 @@ namespace tss {
                             getLineStartPositions: (): number[] => [],
                             getChangeRange: (oldSnapshot) => undefined
                         };
-                    } else { // This is some reference import
+                    } else {
+                        // This is some reference import
                         return {
                             getText: (start, end) => '',
                             getLength: () => 0,

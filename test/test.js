@@ -66,6 +66,20 @@ describe('typescript-simple', function() {
                 tss(src);
             }, /^Error: L0: Cannot find name 'Promise'./);
         });
+
+        it('throws an error for ES2016 Array#includes', function() {
+            var src = "var x = [1, 2, 3].includes(2);";
+            assert.throws(function() {
+                tss(src);
+            }, /^Error: L0: Property 'includes' does not exist on type 'number\[]'./);
+        });
+
+        it('throws an error for ES2017 Object#values', function() {
+            var src = "var x = Object.values({});";
+            assert.throws(function() {
+                tss(src);
+            }, /^Error: L0: Property 'values' does not exist on type 'ObjectConstructor'./);
+        });
     });
 
     context('target ES2015', function() {
@@ -82,6 +96,32 @@ describe('typescript-simple', function() {
 
         it('does not throw for ES2015 Promise', function() {
             var src = "var x = new Promise(function (resolve, reject) {" + eol + "});";
+            var expected = src + eol;
+            assert.equal(tss.compile(src), expected);
+        });
+    });
+
+    context('target ES2016', function() {
+        var tss;
+        beforeEach(function() {
+            tss = new TypeScriptSimple({target: ts.ScriptTarget.ES2016});
+        });
+
+        it('compiles ES2016 Array#includes', function() {
+            var src = "var x = [1, 2, 3].includes(2);";
+            var expected = src + eol;
+            assert.equal(tss.compile(src), expected);
+        });
+    });
+
+    context('target ES2017', function() {
+        var tss;
+        beforeEach(function() {
+            tss = new TypeScriptSimple({target: ts.ScriptTarget.ES2017});
+        });
+
+        it('throws an error for ES2017 Object#values', function() {
+            var src = "var x = Object.values({});";
             var expected = src + eol;
             assert.equal(tss.compile(src), expected);
         });
