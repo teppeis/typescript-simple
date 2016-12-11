@@ -4,7 +4,7 @@
   "description": "Simple API to compile TypeScript code string to JavaScript. That's all!",
   "main": "index.js",
   "engines": {
-    "node": ">=0.12"
+    "node": ">=4"
   },
   "scripts": {
     "test": "npm run build && mocha",
