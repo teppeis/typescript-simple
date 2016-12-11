@@ -33,6 +33,7 @@ Simple API to compile TypeScript code string to JavaScript. That's all!
 * typescript-simple v4.x.x uses TypeScript v1.7
 * typescript-simple v5.x.x uses TypeScript v1.8
 * typescript-simple v6.x.x uses TypeScript v2.0
+* typescript-simple v7.x.x uses TypeScript v2.1
 
 Note: typescript-simple updates the major version for TypeScript's minor update including breaking changes.
 
