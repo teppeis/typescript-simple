@@ -159,7 +159,7 @@ namespace tss {
 
         private getFile (outputFiles: ts.OutputFile[], fileName: string): ts.OutputFile {
             const files = outputFiles.filter((file) => {
-              const full = path.resolve(process.cwd(), fileName);
+              const full = this.normalizeSlashes(path.resolve(process.cwd(), fileName));
               return file.name === fileName || file.name === full;
             });
             return files[0];
