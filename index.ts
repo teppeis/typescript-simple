@@ -17,7 +17,7 @@ function tss(code: string, options?: ts.CompilerOptions): string {
 
 namespace tss {
     export class TypeScriptSimple {
-        private service: ts.LanguageService = null;
+        private service: ts.LanguageService | null = null;
         private outputs: ts.Map<string> = {} as ts.Map<string>;
         private options: ts.CompilerOptions;
         private files: ts.Map<{ version: number; text: string; }> = {} as ts.Map<{ version: number; text: string; }>;
