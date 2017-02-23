@@ -64,7 +64,9 @@ describe('typescript-simple', function() {
             var src = "var x = new Promise(function (resolve, reject) {\n});";
             assert.throws(function() {
                 tss(src);
-            }, /^Error: L0: Cannot find name 'Promise'./);
+            // }, /^Error: L0: Cannot find name 'Promise'./);
+            }, /^Error: L0: 'Promise' only refers to a type, but is being used as a value here./);
+
         });
 
         it('throws an error for ES2016 Array#includes', function() {
