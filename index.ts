@@ -214,7 +214,23 @@ namespace tss {
         private formatDiagnostics(diagnostics: ts.Diagnostic[]): string {
             return diagnostics.map((d) => {
                 if (d.file) {
-                    return 'L' + d.file.getLineAndCharacterOfPosition(d.start).line + ': ' + d.messageText;
+                    const line       = d.file.getLineAndCharacterOfPosition(d.start).line;
+                    const linePrefix = `Line ${line}: `;
+
+                    if (typeof d.messageText === 'object') {
+                        if (d.messageText.next != null) {
+                            let indentStr = '';
+                            for (let i = 0; i < linePrefix.length; i++) {
+                                indentStr += ' ';
+                            }
+
+                            d.messageText.messageText += `\n${indentStr}${d.messageText.next.messageText}`;
+                        }
+
+                        d.messageText = d.messageText.messageText;
+                    }
+
+                    return linePrefix + d.messageText;
                 } else {
                     return d.messageText;
                 }
