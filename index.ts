@@ -214,7 +214,7 @@ namespace tss {
         private formatDiagnostics(diagnostics: ts.Diagnostic[]): string {
             return diagnostics.map((d) => {
                 const message = ts.flattenDiagnosticMessageText(d.messageText, os.EOL);
-                return d.file ? 'L' + d.file.getLineAndCharacterOfPosition(d.start).line + ': ' + message
+                return d.file ? `Line ${d.file.getLineAndCharacterOfPosition(d.start).line}: ${message}`
                               : message;
             }).join(os.EOL);
         }
