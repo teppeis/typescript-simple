@@ -82,28 +82,25 @@ namespace tss {
                 getScriptSnapshot: (fileName) => {
                     let file = this.files[fileName];
                     if (!file) {
-                        // default lib
-                        let defaultLibPath = path.join(this.getTypeScriptBinDir(), fileName);
-                        if (fs.existsSync(defaultLibPath)) {
-                            file = this.files[fileName] = {version: 0, text: fs.readFileSync(defaultLibPath).toString()};
-                        }
+                        [fileName, path.join(this.getTypeScriptBinDir(), fileName)].some((filePath) => {
+                            if (fs.existsSync(filePath)) {
+                                file = this.files[fileName] = { version: 0, text: fs.readFileSync(filePath, 'utf8') };
+                                return true;
+                            }
+                            return false;
+                        });
                     }
-                    if (file) {
-                        return {
+                    return file ? {
                             getText: (start, end) => file.text.substring(start, end),
                             getLength: () => file.text.length,
-                            getLineStartPositions: (): number[] => [],
+                            getLineStartPositions: () => [],
                             getChangeRange: (oldSnapshot) => undefined
-                        };
-                    } else {
-                        // This is some reference import
-                        return {
+                        } : {
                             getText: (start, end) => '',
                             getLength: () => 0,
-                            getLineStartPositions: (): number[] => [],
+                            getLineStartPositions: () => [],
                             getChangeRange: (oldSnapshot) => undefined
                         };
-                    }
                 },
                 getCurrentDirectory: () => process.cwd(),
                 getCompilationSettings: () => this.options,
