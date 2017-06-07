@@ -189,6 +189,10 @@ namespace tss {
             // for Windows #37
             outputFileName = this.normalizeSlashes(outputFileName);
             let file = this.getFile(output.outputFiles, outputFileName);
+            if (output.outputFiles.length == 0) {
+                return '';
+            }
+
             let text = file.text;
 
             // If we have sourceMaps convert them to inline sourceMaps

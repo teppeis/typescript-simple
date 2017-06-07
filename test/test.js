@@ -266,4 +266,23 @@ describe('typescript-simple', function() {
       assert.equal(tss.compile(src, path.join(__dirname, 'module.ts')), expected);
       assert.equal(tss.compile(src, path.join('test', 'module.ts')), expected);
     });
+
+    describe('declaration files', function(){
+      it('sould result is blank', function(){
+        var tss = new TypeScriptSimple({});
+        var src = "declare namespace github.api {}";
+        var expected = '';
+        assert.equal(tss.compile(src, path.join(__dirname, 'module.d.ts')), expected);
+        assert.equal(tss.compile(src, path.join('test', 'module.ts')), expected);
+      });
+      it('sould raised compile error with broken code', function(){
+        var tss = new TypeScriptSimple({});
+        var src = "declare namespace github.api {";
+        var expected = '';
+
+        assert.throws(function() {
+          tss.compile(src, 'module.d.ts');
+        });
+      });
+    });
 });
