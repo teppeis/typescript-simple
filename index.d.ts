@@ -5,6 +5,7 @@ declare namespace tss {
         private doSemanticChecks;
         private service;
         private options;
+        private compilerHost;
         private files;
         /**
          * @param {ts.CompilerOptions=} options TypeScript compile options (some options are ignored)
@@ -24,6 +25,8 @@ declare namespace tss {
         private getTypeScriptBinDir();
         private getDefaultLibFileName(options);
         private getFile(outputFiles, fileName);
+        private getEmulatedEmitHost(service);
+        private getSourceFilePathInNewDir(service, fileName);
         private toJavaScript(service, fileName);
         private normalizeSlashes(path);
         private formatDiagnostics(diagnostics);

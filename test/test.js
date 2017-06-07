@@ -210,15 +210,20 @@ describe('typescript-simple', function() {
     });
 
     context('tss outDir and rootDir options are specified', function() {
-        var tss;
-        beforeEach(function() {
-            tss = new TypeScriptSimple({outDir: 'built/', rootDir: 'src'}, false);
-        });
 
-        it('compares output file names with the name with outDir without rootDir', function() {
+        it('compares output file names with the name with outDir and rootDir', function() {
+            var tss = new TypeScriptSimple({outDir: 'built/', rootDir: 'src'}, false);
             var src = "var x = 123;";
             assert.doesNotThrow(function() {
                 tss.compile(src, 'src/file.ts');
+            });
+        });
+
+        it('compares output file names with the name with outDir and rootDir and called convertCompilerOptionsFromJson options', function() {
+            var tss = new TypeScriptSimple(ts.convertCompilerOptionsFromJson({outDir: 'built/', rootDir: 'src/'}, process.cwd()).options, false);
+            var src = "var x = 123;";
+            assert.doesNotThrow(function() {
+              tss.compile(src, 'src/file.ts');
             });
         });
     });
