@@ -10,7 +10,7 @@
   "scripts": {
     "build": "tsc",
     "prepare": "npm run build",
-    "test": "mocha"
+    "test": "npm run prepare && mocha"
   },
   "dependencies": {
     "typescript": "^2.2.1"
