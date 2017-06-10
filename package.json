@@ -1,33 +1,33 @@
 {
   "name": "typescript-simple",
-  "version": "8.0.0",
   "description": "Simple API to compile TypeScript code string to JavaScript. That's all!",
-  "main": "index.js",
+  "version": "8.0.0",
+  "author": "Teppei Sato <teppeis@gmail.com>",
   "engines": {
     "node": ">=4"
   },
+  "main": "index.js",
   "scripts": {
-    "test": "npm run build && mocha",
     "build": "tsc",
-    "prepublish": "npm test"
+    "prepare": "npm run build",
+    "test": "npm run prepare && mocha"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/teppeis/typescript-simple"
-  },
-  "keywords": [
-    "typescript"
-  ],
-  "author": "Teppei Sato <teppeis@gmail.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/teppeis/typescript-simple/issues"
-  },
-  "homepage": "https://github.com/teppeis/typescript-simple",
   "dependencies": {
     "typescript": "^2.2.1"
   },
   "devDependencies": {
     "mocha": "^3.1.2"
-  }
+  },
+  "homepage": "https://github.com/teppeis/typescript-simple",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/teppeis/typescript-simple"
+  },
+  "bugs": {
+    "url": "https://github.com/teppeis/typescript-simple/issues"
+  },
+  "keywords": [
+    "typescript"
+  ],
+  "license": "MIT"
 }
