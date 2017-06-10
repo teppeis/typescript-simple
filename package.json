@@ -9,8 +9,8 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "prepublish": "npm test",
-    "test": "npm run build && mocha"
+    "prepare": "npm run build",
+    "test": "npm run prepare && mocha"
   },
   "dependencies": {
     "typescript": "^2.2.1"
