@@ -178,7 +178,7 @@ namespace tss {
                 throw new Error(this.formatDiagnostics(allDiagnostics));
             }
 
-            let outDir = 'outDir' in this.options ? this.options.outDir : '';
+            let outDir = this.options.outDir != null ? this.options.outDir : '';
             let fileNameWithoutRoot = 'rootDir' in this.options ? fileName.replace(new RegExp('^' + this.options.rootDir), '') : fileName;
             let outputFileName: string;
             if (this.options.jsx === ts.JsxEmit.Preserve) {
@@ -213,11 +213,9 @@ namespace tss {
 
         private formatDiagnostics(diagnostics: ts.Diagnostic[]): string {
             return diagnostics.map((d) => {
-                if (d.file) {
-                    return 'L' + d.file.getLineAndCharacterOfPosition(d.start).line + ': ' + d.messageText;
-                } else {
-                    return d.messageText;
-                }
+                const message = ts.flattenDiagnosticMessageText(d.messageText, os.EOL);
+                return d.file ? `Line ${d.file.getLineAndCharacterOfPosition(d.start).line}: ${message}`
+                              : message;
             }).join(os.EOL);
         }
     }

@@ -51,7 +51,7 @@ describe('typescript-simple', function() {
                 tss(src);
             // TypeScript 2.1 bug?
             // }, /^Error: L0: Type 'string' is not assignable to type 'number'./);
-            }, /^Error: L0: Type '"str"' is not assignable to type 'number'./);
+            }, /^Error: Line 0: Type '"str"' is not assignable to type 'number'./);
         });
 
         it('compiles ES2015 "let" to "var"', function() {
@@ -65,7 +65,7 @@ describe('typescript-simple', function() {
             assert.throws(function() {
                 tss(src);
             // }, /^Error: L0: Cannot find name 'Promise'./);
-            }, /^Error: L0: 'Promise' only refers to a type, but is being used as a value here./);
+            }, /^Error: Line 0: 'Promise' only refers to a type, but is being used as a value here./);
 
         });
 
@@ -73,14 +73,14 @@ describe('typescript-simple', function() {
             var src = "var x = [1, 2, 3].includes(2);";
             assert.throws(function() {
                 tss(src);
-            }, /^Error: L0: Property 'includes' does not exist on type 'number\[]'./);
+            }, /^Error: Line 0: Property 'includes' does not exist on type 'number\[]'./);
         });
 
         it('throws an error for ES2017 Object#values', function() {
             var src = "var x = Object.values({});";
             assert.throws(function() {
                 tss(src);
-            }, /^Error: L0: Property 'values' does not exist on type 'ObjectConstructor'./);
+            }, /^Error: Line 0: Property 'values' does not exist on type 'ObjectConstructor'./);
         });
     });
 
@@ -140,7 +140,7 @@ describe('typescript-simple', function() {
             var expected = "var x = 'some string';" + eol;
             assert.equal(tss.compile(src), expected);
         });
-        
+
         it('reference imports are ignored', function() {
             var src = "/// <reference path='./typings/tsd'/>" + eol
                     + "var x: number = 'some string';";
@@ -153,7 +153,7 @@ describe('typescript-simple', function() {
             var src = "var x = 123 123;";
             assert.throws(function() {
                 tss.compile(src);
-            }, /^Error: L0: ',' expected./);
+            }, /^Error: Line 0: ',' expected./);
         });
     });
 
