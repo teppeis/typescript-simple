@@ -3,11 +3,14 @@
         "target": "es5",
         "module": "commonjs",
         "declaration": true,
-        "noImplicitAny": true,
-        "strictNullChecks": true,
         "removeComments": false,
         "stripInternal": true,
-        "noLib": false
+        // since 2.3
+        // "strict": true,
+        "alwaysStrict": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "strictNullChecks": true
     },
     "files": [
         "./index.ts"
