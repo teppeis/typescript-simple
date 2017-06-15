@@ -213,7 +213,7 @@ namespace tss {
 
         private formatDiagnostics(diagnostics: ts.Diagnostic[]): string {
             return diagnostics.map((d) => {
-                if (d.file) {
+                if (d.file && typeof d.start === 'number') {
                     return 'L' + d.file.getLineAndCharacterOfPosition(d.start).line + ': ' + d.messageText;
                 } else {
                     return d.messageText;
