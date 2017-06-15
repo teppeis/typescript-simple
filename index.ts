@@ -178,7 +178,7 @@ namespace tss {
                 throw new Error(this.formatDiagnostics(allDiagnostics));
             }
 
-            let outDir = 'outDir' in this.options ? this.options.outDir : '';
+            let outDir = (this.options && this.options.outDir) ? this.options.outDir : '';
             let fileNameWithoutRoot = 'rootDir' in this.options ? fileName.replace(new RegExp('^' + this.options.rootDir), '') : fileName;
             let outputFileName: string;
             if (this.options.jsx === ts.JsxEmit.Preserve) {

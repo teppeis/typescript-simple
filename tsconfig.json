@@ -9,15 +9,7 @@
         "stripInternal": true,
         "noLib": false
     },
-    "filesGlob": [
-        "./**/*.ts",
-        "!./browser.d.ts",
-        "!./browser/**/*.ts",
-        "!./index.d.ts",
-        "!./node_modules/**/*.ts"
-    ],
     "files": [
-        "./index.ts",
-        "./typings/main.d.ts"
+        "./index.ts"
     ]
 }
