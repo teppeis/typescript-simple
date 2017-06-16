@@ -3,21 +3,16 @@
         "target": "es5",
         "module": "commonjs",
         "declaration": true,
-        "noImplicitAny": true,
-        "strictNullChecks": true,
         "removeComments": false,
         "stripInternal": true,
-        "noLib": false
+        // since 2.3
+        // "strict": true,
+        "alwaysStrict": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "strictNullChecks": true
     },
-    "filesGlob": [
-        "./**/*.ts",
-        "!./browser.d.ts",
-        "!./browser/**/*.ts",
-        "!./index.d.ts",
-        "!./node_modules/**/*.ts"
-    ],
     "files": [
-        "./index.ts",
-        "./typings/main.d.ts"
+        "./index.ts"
     ]
 }
