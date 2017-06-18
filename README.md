@@ -1,6 +1,8 @@
 typescript-simple
 ======
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/teppeis/typescript-simple.svg)](https://greenkeeper.io/)
+
 Simple API to compile TypeScript code string to JavaScript. That's all!
 
 [![npm version][npm-image]][npm-url]
