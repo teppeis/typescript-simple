@@ -19,6 +19,7 @@ namespace tss {
     export class TypeScriptSimple {
         private service: ts.LanguageService | null = null;
         private options: ts.CompilerOptions;
+        private compilerHost: ts.CompilerHost;
         private files: {[key: string]: { version: number; text: string; }} = {};
 
         /**
@@ -58,6 +59,10 @@ namespace tss {
 
             if (!this.service) {
                 this.service = this.createService();
+            }
+
+            if (!this.compilerHost) {
+                this.compilerHost = ts.createCompilerHost(this.options);
             }
 
             let file = this.files[fileName];
@@ -164,6 +169,37 @@ namespace tss {
             return files[0];
         }
 
+        private getEmulatedEmitHost(service: ts.LanguageService): any {
+            let program: any = service.getProgram();
+            return {
+                getCanonicalFileName: this.compilerHost.getCanonicalFileName,
+                getCommonSourceDirectory: program.getCommonSourceDirectory,
+                getCompilerOptions: program.getCompilerOptions,
+                getCurrentDirectory: ()=> process.cwd()
+            };
+        }
+
+        private getSourceFilePathInNewDir(service: ts.LanguageService, fileName: string): string {
+            let outputFileName: string;
+            // using secred function
+            let anonyTs = (<any>ts);
+            // check `getSourceFilePathInNewDir` deprecated
+            if (anonyTs.getSourceFilePathInNewDir && 'outDir' in this.options) {
+                outputFileName = anonyTs.getSourceFilePathInNewDir({fileName: fileName}, this.getEmulatedEmitHost(service), this.options.outDir);
+            } else {
+                let outDir = (this.options && this.options.outDir) ? this.options.outDir : '';
+                let fileNameWithoutRoot = 'rootDir' in this.options ? fileName.replace(new RegExp('^' + this.options.rootDir), '') : fileName;
+                outputFileName = path.join(outDir, fileNameWithoutRoot);
+            }
+
+            if (this.options.jsx === ts.JsxEmit.Preserve) {
+                outputFileName = outputFileName.replace(/\.tsx$/, '.jsx');
+            } else {
+                outputFileName = outputFileName.replace(/\.tsx?$/, '.js');
+            }
+            return outputFileName;
+        }
+
         private toJavaScript(service: ts.LanguageService, fileName: string): string {
             let output = service.getEmitOutput(fileName);
 
@@ -177,18 +213,16 @@ namespace tss {
             if (allDiagnostics.length) {
                 throw new Error(this.formatDiagnostics(allDiagnostics));
             }
+            let outputFileName = this.getSourceFilePathInNewDir(service, fileName);
 
-            let outDir = (this.options && this.options.outDir) ? this.options.outDir : '';
-            let fileNameWithoutRoot = 'rootDir' in this.options ? fileName.replace(new RegExp('^' + this.options.rootDir), '') : fileName;
-            let outputFileName: string;
-            if (this.options.jsx === ts.JsxEmit.Preserve) {
-                outputFileName = path.join(outDir, fileNameWithoutRoot.replace(/\.tsx$/, '.jsx'));
-            } else {
-                outputFileName = path.join(outDir, fileNameWithoutRoot.replace(/\.tsx?$/, '.js'));
-            }
             // for Windows #37
             outputFileName = this.normalizeSlashes(outputFileName);
+
             let file = this.getFile(output.outputFiles, outputFileName);
+            if (output.outputFiles.length == 0) {
+                return '';
+            }
+
             let text = file.text;
 
             // If we have sourceMaps convert them to inline sourceMaps

@@ -210,15 +210,20 @@ describe('typescript-simple', function() {
     });
 
     context('tss outDir and rootDir options are specified', function() {
-        var tss;
-        beforeEach(function() {
-            tss = new TypeScriptSimple({outDir: 'built/', rootDir: 'src'}, false);
-        });
 
-        it('compares output file names with the name with outDir without rootDir', function() {
+        it('compares output file names with the name with outDir and rootDir', function() {
+            var tss = new TypeScriptSimple({outDir: 'built/', rootDir: 'src'}, false);
             var src = "var x = 123;";
             assert.doesNotThrow(function() {
                 tss.compile(src, 'src/file.ts');
+            });
+        });
+
+        it('compares output file names with the name with outDir and rootDir and called convertCompilerOptionsFromJson options', function() {
+            var tss = new TypeScriptSimple(ts.convertCompilerOptionsFromJson({outDir: 'built/', rootDir: 'src/'}, process.cwd()).options, false);
+            var src = "var x = 123;";
+            assert.doesNotThrow(function() {
+              tss.compile(src, 'src/file.ts');
             });
         });
     });
@@ -265,5 +270,24 @@ describe('typescript-simple', function() {
       var expected = 'var x = 1;' + eol;
       assert.equal(tss.compile(src, path.join(__dirname, 'module.ts')), expected);
       assert.equal(tss.compile(src, path.join('test', 'module.ts')), expected);
+    });
+
+    describe('declaration files', function(){
+      it('sould result is blank', function(){
+        var tss = new TypeScriptSimple({});
+        var src = "declare namespace github.api {}";
+        var expected = '';
+        assert.equal(tss.compile(src, path.join(__dirname, 'module.d.ts')), expected);
+        assert.equal(tss.compile(src, path.join('test', 'module.ts')), expected);
+      });
+      it('sould raised compile error with broken code', function(){
+        var tss = new TypeScriptSimple({});
+        var src = "declare namespace github.api {";
+        var expected = '';
+
+        assert.throws(function() {
+          tss.compile(src, 'module.d.ts');
+        });
+      });
     });
 });
