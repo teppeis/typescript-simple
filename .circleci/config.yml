@@ -1,0 +1,68 @@
+workflows:
+  version: 2
+  node-multi-build:
+    jobs:
+      - node-v4
+      - node-v6
+      - node-v8
+
+version: 2
+jobs:
+  node-base: &node-base
+    docker:
+      - image: node
+    environment:
+    working_directory: ~/working_directory
+    steps:
+      - run:
+          name: Versions
+          command: |
+            yarn versions
+            echo "npm: $(npm --version)"
+      - checkout
+      - restore_cache:
+          keys:
+            - v{{ .Environment.CIRCLE_CACHE_VERSION }}-npm-lock-{{ .Branch }}-{{ .Environment.CIRCLE_JOB }}-{{ checksum "package-lock.json" }}
+            - v{{ .Environment.CIRCLE_CACHE_VERSION }}-npm-lock-master-{{ .Environment.CIRCLE_JOB }}-{{ checksum "package-lock.json" }}
+            - v{{ .Environment.CIRCLE_CACHE_VERSION }}-npm-cache-{{ .Branch }}-{{ .Environment.CIRCLE_JOB }}
+            - v{{ .Environment.CIRCLE_CACHE_VERSION }}-npm-cache-master-{{ .Environment.CIRCLE_JOB }}
+      - run:
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Test with TypeScript 2.2
+          command: |
+            npm install --no-save typescript@2.2
+            npm test
+      - run:
+          name: Test with TypeScript 2.3
+          command: |
+            npm install --no-save typescript@2.3
+            npm test
+      - run:
+          name: Test with TypeScript 2.4
+          command: |
+            npm install --no-save typescript@2.4
+            npm test
+      - save_cache:
+          key: v{{ .Environment.CIRCLE_CACHE_VERSION }}-npm-lock-{{ .Branch }}-{{ .Environment.CIRCLE_JOB }}-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
+      - save_cache:
+          key: v{{ .Environment.CIRCLE_CACHE_VERSION }}-npm-cache-{{ .Branch }}-{{ .Environment.CIRCLE_JOB }}-{{ checksum "package-lock.json" }}
+          paths:
+            - /usr/local/share/.cache/yarn
+            - ~/.npm/_cacache
+
+  node-v4:
+    <<: *node-base
+    docker:
+      - image: node:4
+  node-v6:
+    <<: *node-base
+    docker:
+      - image: node:6
+  node-v8:
+    <<: *node-base
+    docker:
+      - image: node:8

@@ -20,6 +20,11 @@ test_script:
   - node --version
   - npm --version
   # run tests
+  - npm install --no-save typescript@2.2
+  - npm test
+  - npm install --no-save typescript@2.3
+  - npm test
+  - npm install --no-save typescript@2.4
   - npm test
 
 # Don't actually build.

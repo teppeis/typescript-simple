@@ -6,7 +6,7 @@ Simple API to compile TypeScript code string to JavaScript. That's all!
 [![npm version][npm-image]][npm-url]
 [![npm downloads][npm-downloads-image]][npm-url]
 ![Node.js Version Support][node-version]
-[![build status][travis-image]][travis-url]
+[![build status][circleci-image]][circleci-url]
 [![windows build status][appveyor-image]][appveyor-url]
 [![dependency status][deps-image]][deps-url]
 ![License][license]
@@ -156,3 +156,5 @@ MIT License: Teppei Sato &lt;teppeis@gmail.com&gt;
 [license]: https://img.shields.io/npm/l/typescript-simple.svg
 [appveyor-image]: https://ci.appveyor.com/api/projects/status/22nwyfaf5p0yw54j/branch/master?svg=true
 [appveyor-url]: https://ci.appveyor.com/project/teppeis/typescript-simple/branch/master
+[circleci-image]: https://circleci.com/gh/teppeis/typescript-simple.svg?style=svg
+[circleci-url]: https://circleci.com/gh/teppeis/typescript-simple
