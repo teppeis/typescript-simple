@@ -2,6 +2,9 @@
     "compilerOptions": {
         "target": "es5",
         "module": "commonjs",
+        "lib": [
+            "ES6"
+        ],
         "declaration": true,
         "removeComments": false,
         "stripInternal": true,

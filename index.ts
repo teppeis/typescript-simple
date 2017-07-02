@@ -27,13 +27,16 @@ namespace tss {
          * @constructor
          */
         constructor(options: ts.CompilerOptions = {}, private doSemanticChecks = true) {
-            // accept null
-            options = options || {};
+            options = Object.assign({}, options);
             if (options.target == null) {
                 options.target = ts.ScriptTarget.ES5;
             }
             if (options.module == null) {
                 options.module = ts.ModuleKind.None;
+            }
+            if (options.sourceMap) {
+                options.sourceMap = false;
+                options.inlineSourceMap = true;
             }
             this.options = options;
         }
@@ -113,7 +116,7 @@ namespace tss {
                 // TODO: Use options.newLine
                 getNewLine: () => os.EOL,
                 log: (message: string) => console.log(message),
-                trace: (message: string) => console.debug(message),
+                trace: (message: string) => console.trace(message),
                 error: (message: string) => console.error(message),
                 readFile: readFile,
                 fileExists: fileExists
@@ -154,31 +157,6 @@ namespace tss {
             }
         }
 
-        /**
-         * converts {"version":3,"file":"file.js","sourceRoot":"","sources":["file.ts"],"names":[],
-         *    "mappings":"AAAA,IAAI,CAAC,GAAG,MAAM,CAAC"}
-         * to {"version":3,"sources":["foo/test.ts"],"names":[],
-         *    "mappings":"AAAA,IAAI,CAAC,GAAG,MAAM,CAAC","file":"foo/test.ts","sourcesContent":["var x = 'test';"]}
-         * derived from : https://github.com/thlorenz/convert-source-map
-         * @internal
-         */
-        private getInlineSourceMap(mapText: string, fileName: string): string {
-            let sourceMap = JSON.parse(mapText);
-            sourceMap.file = fileName;
-            sourceMap.sources = [fileName];
-            sourceMap.sourcesContent = [this.files[fileName].text];
-            delete sourceMap.sourceRoot;
-            return JSON.stringify(sourceMap);
-        }
-
-        private getFile (outputFiles: ts.OutputFile[], fileName: string): ts.OutputFile {
-            const files = outputFiles.filter((file) => {
-              const full = this.normalizeSlashes(path.resolve(process.cwd(), fileName));
-              return file.name === fileName || file.name === full;
-            });
-            return files[0];
-        }
-
         private toJavaScript(service: ts.LanguageService, fileName: string): string {
             let output = service.getEmitOutput(fileName);
 
@@ -193,37 +171,12 @@ namespace tss {
                 throw new Error(this.formatDiagnostics(allDiagnostics));
             }
 
-            let outDir = (this.options && this.options.outDir) ? this.options.outDir : '';
-            let fileNameWithoutRoot = 'rootDir' in this.options ? fileName.replace(new RegExp('^' + this.options.rootDir), '') : fileName;
-            let outputFileName: string;
-            if (this.options.jsx === ts.JsxEmit.Preserve) {
-                outputFileName = path.join(outDir, fileNameWithoutRoot.replace(/\.tsx$/, '.jsx'));
-            } else {
-                outputFileName = path.join(outDir, fileNameWithoutRoot.replace(/\.tsx?$/, '.js'));
-            }
-            // for Windows #37
-            outputFileName = this.normalizeSlashes(outputFileName);
-            let file = this.getFile(output.outputFiles, outputFileName);
-            let text = file.text;
-
-            // If we have sourceMaps convert them to inline sourceMaps
-            if (this.options.sourceMap) {
-                let sourceMapFileName = outputFileName + '.map';
-                let sourceMapFile = this.getFile(output.outputFiles, sourceMapFileName)
-
-                // Transform sourcemap
-                let sourceMapText = sourceMapFile.text;
-                sourceMapText = this.getInlineSourceMap(sourceMapText, fileName);
-                let base64SourceMapText = new Buffer(sourceMapText).toString('base64');
-                let sourceMapComment = '//# sourceMappingURL=data:application/json;base64,' + base64SourceMapText;
-                text = text.replace('//# sourceMappingURL=' + path.basename(sourceMapFileName), sourceMapComment);
+            if (output.outputFiles.length !== 1) {
+                const names = output.outputFiles.map(_ => _.name);
+                throw new Error(`Output should be only 1 file, but ${names.length} files: ${names.join(', ')}`);
             }
 
-            return text;
-        }
-
-        private normalizeSlashes(path: string): string {
-            return path.replace(/\\/g, "/");
+            return output.outputFiles[0].text;
         }
 
         private formatDiagnostics(diagnostics: ts.Diagnostic[]): string {
