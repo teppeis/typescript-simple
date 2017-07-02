@@ -157,14 +157,6 @@ namespace tss {
             }
         }
 
-        private getFile(outputFiles: ts.OutputFile[], fileName: string): ts.OutputFile {
-            const files = outputFiles.filter((file) => {
-              const full = this.normalizeSlashes(path.resolve(process.cwd(), fileName));
-              return file.name === fileName || file.name === full;
-            });
-            return files[0];
-        }
-
         private toJavaScript(service: ts.LanguageService, fileName: string): string {
             let output = service.getEmitOutput(fileName);
 
@@ -179,22 +171,12 @@ namespace tss {
                 throw new Error(this.formatDiagnostics(allDiagnostics));
             }
 
-            let outDir = (this.options && this.options.outDir) ? this.options.outDir : '';
-            let fileNameWithoutRoot = 'rootDir' in this.options ? fileName.replace(new RegExp('^' + this.options.rootDir), '') : fileName;
-            let outputFileName: string;
-            if (this.options.jsx === ts.JsxEmit.Preserve) {
-                outputFileName = path.join(outDir, fileNameWithoutRoot.replace(/\.tsx$/, '.jsx'));
-            } else {
-                outputFileName = path.join(outDir, fileNameWithoutRoot.replace(/\.tsx?$/, '.js'));
+            if (output.outputFiles.length !== 1) {
+                const names = output.outputFiles.map(_ => _.name);
+                throw new Error(`Output should be only 1 file, but ${names.length} files: ${names.join(', ')}`);
             }
-            // for Windows #37
-            outputFileName = this.normalizeSlashes(outputFileName);
-            let file = this.getFile(output.outputFiles, outputFileName);
-            return file.text;
-        }
 
-        private normalizeSlashes(path: string): string {
-            return path.replace(/\\/g, "/");
+            return output.outputFiles[0].text;
         }
 
         private formatDiagnostics(diagnostics: ts.Diagnostic[]): string {

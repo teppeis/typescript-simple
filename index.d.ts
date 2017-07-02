@@ -23,9 +23,7 @@ declare namespace tss {
         private createService();
         private getTypeScriptBinDir();
         private getDefaultLibFileName(options);
-        private getFile(outputFiles, fileName);
         private toJavaScript(service, fileName);
-        private normalizeSlashes(path);
         private formatDiagnostics(diagnostics);
     }
 }
