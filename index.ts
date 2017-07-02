@@ -1,6 +1,7 @@
 import fs = require('fs');
 import os = require('os');
 import path = require('path');
+import assert = require('assert');
 
 import ts = require('typescript');
 
@@ -171,12 +172,13 @@ namespace tss {
                 throw new Error(this.formatDiagnostics(allDiagnostics));
             }
 
-            if (output.outputFiles.length !== 1) {
-                const names = output.outputFiles.map(_ => _.name);
-                throw new Error(`Output should be only 1 file, but ${names.length} files: ${names.join(', ')}`);
+            if (output.outputFiles.length === 0) {
+                throw new Error('No output files');
             }
+            const file = output.outputFiles[0];
+            assert(/\.jsx?$/.test(file.name));
 
-            return output.outputFiles[0].text;
+            return file.text;
         }
 
         private formatDiagnostics(diagnostics: ts.Diagnostic[]): string {

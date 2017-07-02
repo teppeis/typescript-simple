@@ -267,8 +267,15 @@ describe('typescript-simple', function() {
       assert.equal(tss.compile(src, path.join('test', 'module.ts')), expected);
     });
 
-    it('compiles correct source with `types`', function() {
+    it('compiles source with `types`', function() {
       var tss = new TypeScriptSimple({types: ['node']});
+      var src = "var x: number = 1;";
+      var expected = 'var x = 1;' + eol;
+      assert.equal(tss.compile(src), expected);
+    });
+
+    it('compiles source with `declaratoin` enabled', function() {
+      var tss = new TypeScriptSimple({declaration: true});
       var src = "var x: number = 1;";
       var expected = 'var x = 1;' + eol;
       assert.equal(tss.compile(src), expected);
