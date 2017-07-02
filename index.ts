@@ -114,8 +114,23 @@ namespace tss {
                 getNewLine: () => os.EOL,
                 log: (message: string) => console.log(message),
                 trace: (message: string) => console.debug(message),
-                error: (message: string) => console.error(message)
+                error: (message: string) => console.error(message),
+                readFile: readFile,
+                fileExists: fileExists
             };
+
+            function readFile(filename: string, encoding?: string): string {
+                try {
+                    const content =  fs.readFileSync(filename, encoding || 'utf8');
+                    return content;
+                } catch (e) {
+                    return '';
+                }
+            }
+
+            function fileExists(filename: string): boolean {
+                return readFile(filename) !== '';
+            }
 
             return ts.createLanguageService(serviceHost, ts.createDocumentRegistry())
         }
