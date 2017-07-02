@@ -157,16 +157,16 @@ describe('typescript-simple', function() {
         });
     });
 
-    context('tss sourceMaps option is true', function() {
+    context('`sourceMap` option is true', function() {
         var tss;
         beforeEach(function() {
             tss = new TypeScriptSimple({target: ts.ScriptTarget.ES5, sourceMap: true}, false);
         });
 
-        it('should result in inline sourceMaps', function() {
+        it('should result in `inlineSourceMap', function() {
             var src = 'var x = "test";';
             var srcFile = 'foo/test.ts';
-            var sourceMap = '{"version":3,"file":"foo/test.ts","sources":["foo/test.ts"],"names":[],"mappings":"AAAA,IAAI,CAAC,GAAG,MAAM,CAAC","sourcesContent":["var x = \\"test\\";"]}';
+            var sourceMap = '{"version":3,"file":"test.js","sources":["test.ts"],"sourceRoot":"","names":[],"mappings":"AAAA,IAAI,CAAC,GAAG,MAAM,CAAC"}';
             var expectedPrefix = 'var x = "test";' + eol + '//# sourceMappingURL=data:application/json;base64,';
             var actual = tss.compile(src, srcFile);
             var match = /(^[\s\S]*;base64,)(.*)$/.exec(actual);
@@ -176,13 +176,13 @@ describe('typescript-simple', function() {
         });
     });
 
-    context('native inlineSourceMap option is true', function() {
+    context('native `inlineSourceMap` option is true', function() {
         var tss;
         beforeEach(function() {
             tss = new TypeScriptSimple({target: ts.ScriptTarget.ES5, inlineSourceMap: true, inlineSources: true}, false);
         });
 
-        it('should result in inline sourceMaps', function() {
+        it('should result in inline sourceMap', function() {
             var src = 'var x = "test";';
             var srcFile = 'foo/test.ts';
             var sourceMap = '{"version":3,"file":"test.js","sourceRoot":"","sources":["test.ts"],"names":[],"mappings":"AAAA,IAAI,CAAC,GAAG,MAAM,CAAC","sourcesContent":["var x = \\"test\\";"]}';
@@ -238,11 +238,11 @@ describe('typescript-simple', function() {
             assert.equal(tss.compile(src), expected);
         });
 
-        it('should result in inline sourceMaps', function() {
+        it('should result in inline sourceMap', function() {
             var tss = new TypeScriptSimple({jsx: ts.JsxEmit.Preserve, sourceMap: true});
             var src = 'var foo: any = <bar />;';
             var srcFile = 'foo/test.tsx';
-            var sourceMap = '{"version":3,"file":"foo/test.tsx","sources":["foo/test.tsx"],"names":[],"mappings":"AAAA,IAAI,GAAG,GAAQ,CAAC,GAAG,GAAG,CAAC","sourcesContent":["var foo: any = <bar />;"]}';
+            var sourceMap = '{"version":3,"file":"test.jsx","sourceRoot":"","sources":["test.tsx"],"names":[],"mappings":"AAAA,IAAI,GAAG,GAAQ,CAAC,GAAG,GAAG,CAAC"}';
             var expectedPrefix = 'var foo = <bar />;' + eol + '//# sourceMappingURL=data:application/json;base64,';
             var actual = tss.compile(src, srcFile);
             var match = /(^[\s\S]*;base64,)(.*)$/.exec(actual);
