@@ -44,6 +44,11 @@ jobs:
           command: |
             npm install --no-save typescript@2.4
             npm test
+      - run:
+          name: Test with TypeScript 2.5 (beta)
+          command: |
+            npm install --no-save typescript
+            npm test
       - save_cache:
           key: v{{ .Environment.CIRCLE_CACHE_VERSION }}-npm-lock-{{ .Branch }}-{{ .Environment.CIRCLE_JOB }}-{{ checksum "package-lock.json" }}
           paths:
