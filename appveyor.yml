@@ -26,6 +26,8 @@ test_script:
   - npm test
   - npm install --no-save typescript@2.4
   - npm test
+  - npm install --no-save typescript
+  - npm test
 
 # Don't actually build.
 build: off
