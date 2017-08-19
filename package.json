@@ -13,7 +13,7 @@
     "test": "npm run prepare && mocha"
   },
   "dependencies": {
-    "typescript": "^2.5.0"
+    "typescript": "^2.5.1"
   },
   "devDependencies": {
     "@types/node": "^4.2.16",
