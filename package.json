@@ -13,10 +13,10 @@
     "test": "npm run prepare && mocha"
   },
   "dependencies": {
-    "typescript": "^2.5.1"
+    "typescript": "^2.2.1"
   },
   "devDependencies": {
-    "@types/node": "^4.2.16",
+    "@types/node": "^4.2.20",
     "mocha": "^3.1.2"
   },
   "homepage": "https://github.com/teppeis/typescript-simple",
