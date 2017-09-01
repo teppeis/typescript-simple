@@ -23,7 +23,7 @@ Simple API to compile TypeScript code string to JavaScript. That's all!
 
 ## Versioning
 
-* typescript-simple v8.x.x uses TypeScript v2.2, v2.3 and v2.4
+* typescript-simple v8.x.x uses TypeScript v2.2 - v2.5
 * typescript-simple v7.x.x uses TypeScript v2.1
 * typescript-simple v6.x.x uses TypeScript v2.0
 * typescript-simple v5.x.x uses TypeScript v1.8
