@@ -156,5 +156,5 @@ MIT License: Teppei Sato &lt;teppeis@gmail.com&gt;
 [license]: https://img.shields.io/npm/l/typescript-simple.svg
 [appveyor-image]: https://ci.appveyor.com/api/projects/status/22nwyfaf5p0yw54j/branch/master?svg=true
 [appveyor-url]: https://ci.appveyor.com/project/teppeis/typescript-simple/branch/master
-[circleci-image]: https://circleci.com/gh/teppeis/typescript-simple.svg?style=svg
+[circleci-image]: https://circleci.com/gh/teppeis/typescript-simple.svg?style=shield
 [circleci-url]: https://circleci.com/gh/teppeis/typescript-simple
