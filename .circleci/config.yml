@@ -52,6 +52,11 @@ jobs:
       - run:
           name: Test with TypeScript 2.6
           command: |
+            npm install --no-save typescript@2.6
+            npm test
+      - run:
+          name: Test with TypeScript 2.7
+          command: |
             npm install --no-save typescript@latest
             npm test
       - save_cache:
