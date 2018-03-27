@@ -3,15 +3,15 @@
 # Test against this version of Node.js
 environment:
   matrix:
-    - nodejs_version: "4"
-    - nodejs_version: "6"
+    # - nodejs_version: "4"
+    # - nodejs_version: "6"
     - nodejs_version: "8"
 
 # Install scripts. (runs after repo cloning)
 install:
   # Get the latest stable version of Node.js or io.js
   - ps: Install-Product node $env:nodejs_version
-  # install modules
+  # Install modules
   - npm install
 
 # Post-install test scripts.
@@ -19,7 +19,7 @@ test_script:
   # Output useful info for debugging.
   - node --version
   - npm --version
-  # run tests
+  # Run tests
   - npm install --no-save typescript@2.2
   - npm test
   - npm install --no-save typescript@2.3
@@ -29,6 +29,8 @@ test_script:
   - npm install --no-save typescript@2.5
   - npm test
   - npm install --no-save typescript@2.6
+  - npm test
+  - npm install --no-save typescript@2.7
   - npm test
   - npm install --no-save typescript@latest
   - npm test
