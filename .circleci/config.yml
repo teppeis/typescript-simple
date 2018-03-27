@@ -5,6 +5,7 @@ workflows:
       - node-v4
       - node-v6
       - node-v8
+      - node-v9
 
 version: 2
 jobs:
@@ -57,6 +58,11 @@ jobs:
       - run:
           name: Test with TypeScript 2.7
           command: |
+            npm install --no-save typescript@2.7
+            npm test
+      - run:
+          name: Test with TypeScript 2.7
+          command: |
             npm install --no-save typescript@latest
             npm test
       - save_cache:
@@ -81,3 +87,7 @@ jobs:
     <<: *node-base
     docker:
       - image: node:8
+  node-v9:
+    <<: *node-base
+    docker:
+      - image: node:9
