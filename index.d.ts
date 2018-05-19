@@ -20,11 +20,11 @@ declare namespace tss {
          * @throw {Error} A syntactic error or a semantic error (if doSemanticChecks is true)
          */
         compile(code: string, fileName?: string): string;
-        private createService();
-        private getTypeScriptBinDir();
-        private getDefaultLibFileName(options);
-        private toJavaScript(service, fileName);
-        private formatDiagnostics(diagnostics);
+        private createService;
+        private getTypeScriptBinDir;
+        private getDefaultLibFileName;
+        private toJavaScript;
+        private formatDiagnostics;
     }
 }
 export = tss;
