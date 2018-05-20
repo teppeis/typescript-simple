@@ -59,9 +59,14 @@ jobs:
             npm install --no-save typescript@2.7
             npm test
       - run:
-          name: Test with TypeScript 2.7
+          name: Test with TypeScript 2.8
           command: |
             npm install --no-save typescript@latest
+            npm test
+      - run:
+          name: Test with TypeScript 2.9 RC
+          command: |
+            npm install --no-save typescript@rc
             npm test
       - save_cache:
           key: v{{ .Environment.CIRCLE_CACHE_VERSION }}-npm-lock-{{ .Branch }}-{{ .Environment.CIRCLE_JOB }}-{{ checksum "package-lock.json" }}

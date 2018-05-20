@@ -39,6 +39,8 @@ test_script:
   - npm test
   - npm install --no-save typescript@latest
   - npm test
+  - npm install --no-save typescript@rc
+  - npm test
 
 # Don't actually build.
 build: off
