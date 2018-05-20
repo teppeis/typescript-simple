@@ -172,7 +172,7 @@ describe('typescript-simple', function() {
             var match = /(^[\s\S]*;base64,)(.*)$/.exec(actual);
             assert(match);
             assert.equal(match[1], expectedPrefix);
-            assert.deepEqual(JSON.parse(new Buffer(match[2], 'base64').toString()), JSON.parse(sourceMap));
+            assert.deepEqual(JSON.parse(Buffer.from(match[2], 'base64').toString()), JSON.parse(sourceMap));
         });
     });
 
@@ -191,7 +191,7 @@ describe('typescript-simple', function() {
             var match = /(^[\s\S]*;base64,)(.*)$/.exec(actual);
             assert(match);
             assert.equal(match[1], expectedPrefix);
-            assert.deepEqual(JSON.parse(new Buffer(match[2], 'base64').toString()), JSON.parse(sourceMap));
+            assert.deepEqual(JSON.parse(Buffer.from(match[2], 'base64').toString()), JSON.parse(sourceMap));
         });
     });
 
