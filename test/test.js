@@ -2,7 +2,8 @@ var assert = require('assert');
 var fs = require('fs');
 var path = require('path');
 var eol = require('os').EOL;
-
+var semver = require('semver');
+var pkgUp = require('pkg-up');
 var ts = require('typescript');
 var tss = require('../');
 var TypeScriptSimple = tss.TypeScriptSimple;
@@ -242,13 +243,24 @@ describe('typescript-simple', function() {
             var tss = new TypeScriptSimple({jsx: ts.JsxEmit.Preserve, sourceMap: true});
             var src = 'var foo: any = <bar />;';
             var srcFile = 'foo/test.tsx';
-            var sourceMap = '{"version":3,"file":"test.jsx","sourceRoot":"","sources":["test.tsx"],"names":[],"mappings":"AAAA,IAAI,GAAG,GAAQ,CAAC,GAAG,GAAG,CAAC"}';
+            var sourceMap = {
+                "version": 3,
+                "file": "test.jsx",
+                "sourceRoot": "",
+                "sources": ["test.tsx"],
+                "names": [],
+            };
+            if (isTSVerGte('2.9.0-rc')) {
+                sourceMap.mappings = "AAAA,IAAI,GAAG,GAAQ,CAAC,GAAG,CAAC,AAAD,EAAG,CAAC";
+            } else {
+                sourceMap.mappings = "AAAA,IAAI,GAAG,GAAQ,CAAC,GAAG,GAAG,CAAC";
+            }
             var expectedPrefix = 'var foo = <bar />;' + eol + '//# sourceMappingURL=data:application/json;base64,';
             var actual = tss.compile(src, srcFile);
             var match = /(^[\s\S]*;base64,)(.*)$/.exec(actual);
             assert(match);
             assert.equal(match[1], expectedPrefix);
-            assert.deepEqual(JSON.parse(Buffer.from(match[2], 'base64').toString()), JSON.parse(sourceMap));
+            assert.deepEqual(JSON.parse(Buffer.from(match[2], 'base64').toString()), sourceMap);
         });
     });
 
@@ -281,3 +293,8 @@ describe('typescript-simple', function() {
       assert.equal(tss.compile(src), expected);
     });
 });
+
+function isTSVerGte(ver) {
+    var pkg = require(pkgUp.sync(path.dirname(require.resolve('typescript'))));
+    return semver.gte(pkg.version, ver);
+}
