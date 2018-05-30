@@ -64,7 +64,7 @@ namespace tss {
                 this.service = this.createService();
             }
 
-            let file = this.files[fileName];
+            const file = this.files[fileName];
             if (file) {
                 file.text = code;
                 file.version++;
@@ -76,18 +76,18 @@ namespace tss {
         }
 
         private createService(): ts.LanguageService {
-            let defaultLib = this.getDefaultLibFileName(this.options);
-            let defaultLibPath = path.join(this.getTypeScriptBinDir(), defaultLib);
+            const defaultLib = this.getDefaultLibFileName(this.options);
+            const defaultLibPath = path.join(this.getTypeScriptBinDir(), defaultLib);
             this.files[defaultLib] = { version: 0, text: fs.readFileSync(defaultLibPath).toString() };
 
-            let serviceHost: ts.LanguageServiceHost = {
+            const serviceHost: ts.LanguageServiceHost = {
                 getScriptFileNames: () => Object.keys(this.files),
                 getScriptVersion: (fileName) => this.files[fileName] && this.files[fileName].version.toString(),
                 getScriptSnapshot: (fileName) => {
                     let file = this.files[fileName];
                     if (!file) {
                         // default lib
-                        let defaultLibPath = path.join(this.getTypeScriptBinDir(), fileName);
+                        const defaultLibPath = path.join(this.getTypeScriptBinDir(), fileName);
                         if (fs.existsSync(defaultLibPath)) {
                             file = this.files[fileName] = {version: 0, text: fs.readFileSync(defaultLibPath).toString()};
                         }
@@ -111,9 +111,7 @@ namespace tss {
                 },
                 getCurrentDirectory: () => process.cwd(),
                 getCompilationSettings: () => this.options,
-                getDefaultLibFileName: (options: ts.CompilerOptions) => {
-                    return this.getDefaultLibFileName(options);
-                },
+                getDefaultLibFileName: (options: ts.CompilerOptions) => this.getDefaultLibFileName(options),
                 // TODO: Use options.newLine
                 getNewLine: () => os.EOL,
                 log: (message: string) => console.log(message),
@@ -159,7 +157,7 @@ namespace tss {
         }
 
         private toJavaScript(service: ts.LanguageService, fileName: string): string {
-            let output = service.getEmitOutput(fileName);
+            const output = service.getEmitOutput(fileName);
 
             let allDiagnostics = service.getCompilerOptionsDiagnostics()
                 .concat(service.getSyntacticDiagnostics(fileName));
