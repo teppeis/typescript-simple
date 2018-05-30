@@ -143,10 +143,8 @@ describe('typescript-simple', () => {
     });
 
     it('reference imports are ignored', () => {
-      const src = `/// <reference path='./typings/tsd'/>${eol
-      }var x: number = 'some string';`;
-      const expected = `/// <reference path='./typings/tsd'/>${eol
-      }var x = 'some string';${eol}`;
+      const src = `/// <reference path='./typings/tsd'/>${eol}var x: number = 'some string';`;
+      const expected = `/// <reference path='./typings/tsd'/>${eol}var x = 'some string';${eol}`;
       assert.equal(tss.compile(src), expected);
     });
 
@@ -167,32 +165,43 @@ describe('typescript-simple', () => {
     it('should result in `inlineSourceMap', () => {
       const src = 'var x = "test";';
       const srcFile = 'foo/test.ts';
-      const sourceMap = '{"version":3,"file":"test.js","sources":["test.ts"],"sourceRoot":"","names":[],"mappings":"AAAA,IAAI,CAAC,GAAG,MAAM,CAAC"}';
+      const sourceMap =
+        '{"version":3,"file":"test.js","sources":["test.ts"],"sourceRoot":"","names":[],"mappings":"AAAA,IAAI,CAAC,GAAG,MAAM,CAAC"}';
       const expectedPrefix = `var x = "test";${eol}//# sourceMappingURL=data:application/json;base64,`;
       const actual = tss.compile(src, srcFile);
       const match = /(^[\s\S]*;base64,)(.*)$/.exec(actual);
       assert(match);
       assert.equal(match[1], expectedPrefix);
-      assert.deepEqual(JSON.parse(Buffer.from(match[2], 'base64').toString()), JSON.parse(sourceMap));
+      assert.deepEqual(
+        JSON.parse(Buffer.from(match[2], 'base64').toString()),
+        JSON.parse(sourceMap)
+      );
     });
   });
 
   context('native `inlineSourceMap` option is true', () => {
     let tss;
     beforeEach(() => {
-      tss = new TypeScriptSimple({target: ts.ScriptTarget.ES5, inlineSourceMap: true, inlineSources: true}, false);
+      tss = new TypeScriptSimple(
+        {target: ts.ScriptTarget.ES5, inlineSourceMap: true, inlineSources: true},
+        false
+      );
     });
 
     it('should result in inline sourceMap', () => {
       const src = 'var x = "test";';
       const srcFile = 'foo/test.ts';
-      const sourceMap = '{"version":3,"file":"test.js","sourceRoot":"","sources":["test.ts"],"names":[],"mappings":"AAAA,IAAI,CAAC,GAAG,MAAM,CAAC","sourcesContent":["var x = \\"test\\";"]}';
+      const sourceMap =
+        '{"version":3,"file":"test.js","sourceRoot":"","sources":["test.ts"],"names":[],"mappings":"AAAA,IAAI,CAAC,GAAG,MAAM,CAAC","sourcesContent":["var x = \\"test\\";"]}';
       const expectedPrefix = `var x = "test";${eol}//# sourceMappingURL=data:application/json;base64,`;
       const actual = tss.compile(src, srcFile);
       const match = /(^[\s\S]*;base64,)(.*)$/.exec(actual);
       assert(match);
       assert.equal(match[1], expectedPrefix);
-      assert.deepEqual(JSON.parse(Buffer.from(match[2], 'base64').toString()), JSON.parse(sourceMap));
+      assert.deepEqual(
+        JSON.parse(Buffer.from(match[2], 'base64').toString()),
+        JSON.parse(sourceMap)
+      );
     });
   });
 
@@ -244,11 +253,11 @@ describe('typescript-simple', () => {
       const src = 'var foo: any = <bar />;';
       const srcFile = 'foo/test.tsx';
       const sourceMap = {
-        'version': 3,
-        'file': 'test.jsx',
-        'sourceRoot': '',
-        'sources': ['test.tsx'],
-        'names': [],
+        version: 3,
+        file: 'test.jsx',
+        sourceRoot: '',
+        sources: ['test.tsx'],
+        names: [],
       };
       if (isTSVerGte('2.9.0-rc')) {
         sourceMap.mappings = 'AAAA,IAAI,GAAG,GAAQ,CAAC,GAAG,CAAC,AAAD,EAAG,CAAC';
