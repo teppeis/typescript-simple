@@ -2,9 +2,7 @@
 
 const importESLintConfig = require('tslint-import-eslint-config');
 
-module.exports = importESLintConfig({
-  extends: ['teppeis/node-v6', 'teppeis/prettier'],
-});
+module.exports = importESLintConfig(require('./.eslintrc'));
 
 module.exports.extends.push('tslint-plugin-prettier');
 Object.assign(module.exports.rules, {
