@@ -150,7 +150,7 @@ MIT License: Teppei Sato &lt;teppeis@gmail.com&gt;
 [travis-url]: https://travis-ci.org/teppeis/typescript-simple
 [deps-image]: https://img.shields.io/david/teppeis/typescript-simple.svg
 [deps-url]: https://david-dm.org/teppeis/typescript-simple
-[node-version]: https://img.shields.io/badge/Node.js%20support-v4,v6,v8-brightgreen.svg
+[node-version]: https://img.shields.io/badge/Node.js%20support-v6,v8,v10-brightgreen.svg
 [coverage-image]: https://img.shields.io/coveralls/teppeis/typescript-simple/master.svg
 [coverage-url]: https://coveralls.io/github/teppeis/typescript-simple?branch=master
 [license]: https://img.shields.io/npm/l/typescript-simple.svg
