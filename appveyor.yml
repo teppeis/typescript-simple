@@ -37,9 +37,9 @@ test_script:
   - npm test
   - npm install --no-save typescript@2.7
   - npm test
-  - npm install --no-save typescript@latest
+  - npm install --no-save typescript@2.8
   - npm test
-  - npm install --no-save typescript@rc
+  - npm install --no-save typescript@2.9
   - npm test
 
 # Don't actually build.
